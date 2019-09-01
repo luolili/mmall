@@ -5,3 +5,5 @@
 - git checkout -b v1.0 mmall/master:开分支：v1.0
 
 - git push mmall HEAD -u : push代码
+
+下载：idea plugin : mybatis plugin

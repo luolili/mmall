@@ -4,10 +4,12 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
+
     <properties resource="datasource.properties"></properties>
 
 <!--    <classPathEntry location=""></classPathEntry>-->
-    <context id="H2Tables" targetRuntime="MyBatis3">
+    <context id="FTable" >
+
         <plugin type="org.mybatis.generator.plugins.FluentBuilderMethodsPlugin"/>
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
@@ -18,7 +20,9 @@
                         userId="${db.username}"
                         password="${db.password}">
         </jdbcConnection>
-
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
         <javaModelGenerator targetPackage="com.mmall.pojo"
                             targetProject="./src/main/java">
             <property name="enableSubPackages" value="false"/>
@@ -27,9 +31,9 @@
             <property name="immutable" value="false"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="generatordemo.mapper"
-                         targetProject="springmybatisgeneratordemo/src/main/resources/mapper">
-            <property name="enableSubPackages" value="true"/>
+        <sqlMapGenerator targetPackage="mappers"
+                         targetProject="./src/main/resources">
+            <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
 
@@ -37,15 +41,26 @@
         you need create mapper package in resource before you run your app
         -->
         <javaClientGenerator type="MIXEDMAPPER"
-                             targetPackage="generatordemo.mapper"
-                             targetProject="springmybatisgeneratordemo/src/main/java">
-            <property name="enableSubPackages" value="true"/>
+                             targetPackage="com.mmall.dao"
+                             targetProject="./src/main/java">
+            <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
+        <!-- cart-->
+        <table tableName="mmall_cart" domainObjectName="Cart"
+        enableCountByExample="false" enableSelectByExample="false"
+        enableDeleteByExample="false" selectByExampleQueryId="false">
 
-        <table tableName="t_coffee" domainObjectName="Coffee">
-            <generatedKey column="id" sqlStatement="CALL IDENTITY()" identity="true"/>
-            <columnOverride column="price" javaType="org.joda.money.Money" jdbcType="BIGINT"
-                            typeHandler="generatordemo.handler.MoneyTypeHandler"/>
         </table>
+         <!-- user-->
+        <table tableName="mmall_user" domainObjectName="User"
+
+        enableCountByExample="false" enableSelectByExample="false"
+        enableDeleteByExample="false" selectByExampleQueryId="false"
+        enableUpdateByExample="false">
+
+        </table>
+
+
     </context>
+
 </generatorConfiguration>
