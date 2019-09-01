@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <properties resource="datasource.properties"></properties>
+
+<!--    <classPathEntry location=""></classPathEntry>-->
+    <context id="H2Tables" targetRuntime="MyBatis3">
+        <plugin type="org.mybatis.generator.plugins.FluentBuilderMethodsPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"/>
+
+        <jdbcConnection driverClass="${db.driverClassName}"
+                        connectionURL="${db.url}"
+                        userId="${db.username}"
+                        password="${db.password}">
+        </jdbcConnection>
+
+        <javaModelGenerator targetPackage="com.mmall.pojo"
+                            targetProject="./src/main/java">
+            <property name="enableSubPackages" value="false"/>
+            <property name="trimStrings" value="true"/>
+            <property name="constructorBased" value="true"/>
+            <property name="immutable" value="false"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="generatordemo.mapper"
+                         targetProject="springmybatisgeneratordemo/src/main/resources/mapper">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+
+        <!--note: if there are many modules ,targetProject:mudole name/src/main/java
+        you need create mapper package in resource before you run your app
+        -->
+        <javaClientGenerator type="MIXEDMAPPER"
+                             targetPackage="generatordemo.mapper"
+                             targetProject="springmybatisgeneratordemo/src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <table tableName="t_coffee" domainObjectName="Coffee">
+            <generatedKey column="id" sqlStatement="CALL IDENTITY()" identity="true"/>
+            <columnOverride column="price" javaType="org.joda.money.Money" jdbcType="BIGINT"
+                            typeHandler="generatordemo.handler.MoneyTypeHandler"/>
+        </table>
+    </context>
+</generatorConfiguration>
