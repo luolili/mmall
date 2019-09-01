@@ -1,0 +1,19 @@
+*.class
+
+#package file
+*.war
+*.ear
+
+#kdiff3
+*.orig
+
+#maven
+/target/
+
+#eclipse
+.settings
+.project
+.classpath
+
+#idea
+.idea
