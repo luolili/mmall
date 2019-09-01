@@ -10,3 +10,5 @@
 - git commit -am 'project init'
 - git log : 看提交记录
 下载：idea plugin : mybatis plugin
+
+fe：chrome插件； restlet client/postman
