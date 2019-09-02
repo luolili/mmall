@@ -1,11 +1,7 @@
 package com.mmall.dao;
 
 import com.mmall.pojo.User;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 public interface UserMapper {
     /**
@@ -91,4 +87,9 @@ public interface UserMapper {
         "where id = #{id,jdbcType=INTEGER}"
     })
     int updateByPrimaryKey(User record);
+
+    int checkUsername(String username);
+
+    User selectLogin(@Param("username") String username,
+                     @Param("password") String password);
 }
