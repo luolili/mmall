@@ -12,3 +12,7 @@
 下载：idea plugin : mybatis plugin
 
 fe：chrome插件； restlet client/postman
+
+MappingJackson2HttpMessageConverter:spring5在配置的时候，
+会出现fasterjackson的类找不到，
+加入相关依赖，重启。

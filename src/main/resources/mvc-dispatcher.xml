@@ -19,7 +19,7 @@
         <!--convertor for arraylist-->
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
-            <!--<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>-->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
         </mvc:message-converters>
     </mvc:annotation-driven>
     <!-- 视图解析器 -->
