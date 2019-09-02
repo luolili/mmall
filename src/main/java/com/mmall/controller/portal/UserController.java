@@ -21,14 +21,14 @@ public class UserController {
      * @param username 用户名
      * @param password 密码
      * @param session session from apache servlet api
-     * @return
+     * @return response
      */
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session) {
         ServerResponse<User> response = userService.login(username, password);
         if (response.isSuccess()) {
-session.setAttribute(Const.CURRENT_USER, response.getData());
+            session.setAttribute(Const.CURRENT_USER, response.getData());
         }
         return response;
     }
