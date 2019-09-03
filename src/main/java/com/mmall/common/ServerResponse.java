@@ -4,7 +4,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)//当data or msg为null的时候，不显示到前台
+//当data or msg为null的时候，不显示到前台
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ServerResponse<T> implements Serializable {
 
     private int status;

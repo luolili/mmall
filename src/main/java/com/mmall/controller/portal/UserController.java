@@ -32,4 +32,36 @@ public class UserController {
         }
         return response;
     }
+
+    @RequestMapping(value = "loginout.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> loginout(HttpSession session) {
+        session.removeAttribute(Const.CURRENT_USER);
+        return ServerResponse.createBySuccess();
+    }
+    @RequestMapping(value = "register.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<String> register(User user) {
+        return userService.register(user);
+    }
+
+    @RequestMapping(value = "check_valid.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> checkValid(String str, String type) {
+        return userService.checkValid(str, type);
+    }
+    @RequestMapping(value = "get_user_info.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<User> getUserInfo(HttpSession session) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user != null) {
+            return ServerResponse.createBySuccess(user);
+        }
+        return ServerResponse.createByErrorMessage("用户未登陆");
+    }
+
+    //忘记密码
+    public ServerResponse<String> forgetPassword(String username) {
+
+    }
 }
