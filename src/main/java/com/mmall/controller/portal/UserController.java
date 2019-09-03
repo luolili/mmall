@@ -50,6 +50,7 @@ public class UserController {
     public ServerResponse<String> checkValid(String str, String type) {
         return userService.checkValid(str, type);
     }
+
     @RequestMapping(value = "get_user_info.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<User> getUserInfo(HttpSession session) {
@@ -61,7 +62,18 @@ public class UserController {
     }
 
     //忘记密码
-    public ServerResponse<String> forgetPassword(String username) {
+    @RequestMapping(value = "forget_get_question.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> forgetGetQuestion(String username) {
+        return userService.selectQuestion(username);
 
+    }
+
+    @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> forgetCheckAnswer(String username,
+                                                    String question, String answer) {
+
+        return userService.checkAnswer(username, question, answer);
     }
 }
