@@ -88,7 +88,6 @@ public class UserController {
     @ResponseBody
     public ServerResponse<String> resetPassword(HttpSession session,
                                                       String passwordOld, String passwordNew) {
-
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorMessage("用户未登陆");
@@ -96,4 +95,22 @@ public class UserController {
         return userService.resetPassword(passwordOld, passwordNew, user);
     }
 
+    //在登陆状态下更新用户信息
+    @RequestMapping(value = "update_information.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<User> update_information(HttpSession session,
+                                                   User user) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorMessage("用户未登陆");
+        }
+        user.setId(currentUser.getId());
+        user.setUsername(currentUser.getUsername());
+        ServerResponse<User> response = userService.updateInformation(user);
+        if (response.isSuccess()) {
+            session.setAttribute(Const.CURRENT_USER, response.getData());
+        }
+        return response;
+
+    }
 }

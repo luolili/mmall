@@ -104,4 +104,6 @@ public interface UserMapper {
 
     //检查这个密码是否是这个用户的
     int checkPassword(@Param("password")String password,@Param("userId") Integer userId);
+
+    int checkEmailByUerId(@Param("email") String email, @Param("userId") Integer userId);
 }
