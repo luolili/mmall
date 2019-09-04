@@ -81,12 +81,10 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ServerResponse<String> selectQuestion(String username) {
         ServerResponse<String> validResponse = this.checkValid(username, Const.USERNAME);
-
         if (validResponse.isSuccess()) {
             //用户不存在
             return ServerResponse.createByErrorMessage("用户不存在");
         }
-
         String question = userMapper.selectQuestionByUsername(username);
 
         if (StringUtils.isNotBlank(question)) {
@@ -97,16 +95,58 @@ public class UserServiceImpl implements IUserService {
 
     public ServerResponse<String> checkAnswer(String username,
                                                     String question, String answer) {
-
         int count = userMapper.checkAnswer(username, question, answer);
-
         if (count > 0) {
             //答案right
             String forgetToken = UUID.randomUUID().toString();
-            TokenCache.setKey("token_" + username, forgetToken);
+            TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("答案错误");
     }
 
+    @Override
+    public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
+        if (StringUtils.isBlank(forgetToken)) {
+            ServerResponse.createByErrorMessage("参数错误，需要传token");
+        }
+        ServerResponse<String> validResponse = this.checkValid(username, Const.USERNAME);
+        if (validResponse.isSuccess()) {
+            //用户不存在
+            return ServerResponse.createByErrorMessage("用户不存在");
+        }
+        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+        if (StringUtils.isBlank(token)) {
+            ServerResponse.createByErrorMessage("token无效or过期");
+        }
+        if (StringUtils.equals(token, forgetToken)) {
+            String encodedPassword = MD5Util.MD5EncodeUtf8(passwordNew);
+            int count = userMapper.updatePasswordByUsername(username, encodedPassword);
+            if (count > 0) {
+                ServerResponse.createBySuccessMessage("修改密码成功");
+            }
+
+        }
+        else {
+            return   ServerResponse.createByErrorMessage("token错误");
+        }
+
+        return   ServerResponse.createByErrorMessage("修改密码失败");
+    }
+
+    @Override
+    public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user) {
+        // 防止横向越权
+        int count = userMapper.checkPassword(passwordOld, user.getId());
+        if (count == 0) {
+            ServerResponse.createByErrorMessage("旧密码错误");
+        }
+        user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew));
+        count = userMapper.updateByPrimaryKeySelective(user);
+
+        if (count > 0) {
+            ServerResponse.createBySuccessMessage("密码更新成功");
+        }
+        return  ServerResponse.createByErrorMessage("密码更新失败");
+    }
 }

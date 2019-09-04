@@ -73,7 +73,27 @@ public class UserController {
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String username,
                                                     String question, String answer) {
-
         return userService.checkAnswer(username, question, answer);
     }
+
+
+    @RequestMapping(value = "forget_reset_password.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> forgetResetPassword(String username,
+                                                    String passwordNew, String forgetToken) {
+        return userService.forgetResetPassword(username, passwordNew, forgetToken);
+    }
+    //登陆状态下的reset password
+    @RequestMapping(value = "reset_password.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> resetPassword(HttpSession session,
+                                                      String passwordOld, String passwordNew) {
+
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorMessage("用户未登陆");
+        }
+        return userService.resetPassword(passwordOld, passwordNew, user);
+    }
+
 }

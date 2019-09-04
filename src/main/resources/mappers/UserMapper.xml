@@ -170,4 +170,19 @@
             answer = #{answer}
     </select>
 
+  <update id="updatePasswordByUsername" parameterType="map">
+    update mmall_user
+  set
+password = #{passwordNew},update_time = now()
+    where usernae = #{username}
+
+  </update>
+
+  <select id="checkPassword" resultType="int" parameterType="map">
+    select
+      count(1)
+    from mmall_user
+    where password = #{password} and
+      id = #{userId}
+  </select>
 </mapper>

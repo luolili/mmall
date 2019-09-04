@@ -99,4 +99,9 @@ public interface UserMapper {
                      @Param("question") String question,
                     @Param("answer") String answer);
 
+    int updatePasswordByUsername(@Param("username") String username,
+                                 @Param("passwordNew") String passwordNew);
+
+    //检查这个密码是否是这个用户的
+    int checkPassword(@Param("password")String password,@Param("userId") Integer userId);
 }
