@@ -1,9 +1,11 @@
 package com.mmall.controller.portal;
 
 import com.mmall.common.Const;
+import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/user/")
 public class UserController {
 
+    @Autowired
     private IUserService userService;
     /**
      * 用户登录
@@ -66,7 +69,6 @@ public class UserController {
     @ResponseBody
     public ServerResponse<String> forgetGetQuestion(String username) {
         return userService.selectQuestion(username);
-
     }
 
     @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.GET)
@@ -76,15 +78,14 @@ public class UserController {
         return userService.checkAnswer(username, question, answer);
     }
 
-
-    @RequestMapping(value = "forget_reset_password.do", method = RequestMethod.GET)
+    @RequestMapping(value = "forget_reset_password.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetResetPassword(String username,
                                                     String passwordNew, String forgetToken) {
         return userService.forgetResetPassword(username, passwordNew, forgetToken);
     }
     //登陆状态下的reset password
-    @RequestMapping(value = "reset_password.do", method = RequestMethod.GET)
+    @RequestMapping(value = "reset_password.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> resetPassword(HttpSession session,
                                                       String passwordOld, String passwordNew) {
@@ -95,11 +96,9 @@ public class UserController {
         return userService.resetPassword(passwordOld, passwordNew, user);
     }
 
-    //在登陆状态下更新用户信息
-    @RequestMapping(value = "update_information.do", method = RequestMethod.GET)
+    @RequestMapping(value = "update_information.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<User> update_information(HttpSession session,
-                                                   User user) {
+    public ServerResponse<User> update_information(HttpSession session, User user) {
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null) {
             return ServerResponse.createByErrorMessage("用户未登陆");
@@ -111,6 +110,16 @@ public class UserController {
             session.setAttribute(Const.CURRENT_USER, response.getData());
         }
         return response;
+    }
 
+    @RequestMapping(value = "get_information.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<User> get_information(HttpSession session) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return userService.getInformation(currentUser.getId());
     }
 }
