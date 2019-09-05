@@ -43,14 +43,11 @@ public class CategoryManagerController {
         }
     }
 
-    @RequestMapping(value = "add_category.do", method = RequestMethod.POST)
+    @RequestMapping(value = "set_category_name.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse setCategoryName(HttpSession session,
                                           String categoryName, Integer categoryId) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
-        }
+        User user = getCurrentUser(session);
         ServerResponse<User> response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
             //admin yes
@@ -60,4 +57,11 @@ public class CategoryManagerController {
         }
     }
 
+    private User getCurrentUser(HttpSession session) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return user;
+    }
 }
