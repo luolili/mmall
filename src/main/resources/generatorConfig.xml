@@ -46,20 +46,23 @@
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
         <!-- cart-->
-        <table tableName="mmall_cart" domainObjectName="Cart"
-        enableCountByExample="false" enableSelectByExample="false"
-        enableDeleteByExample="false" selectByExampleQueryId="false">
+        <!-- <table tableName="mmall_cart" domainObjectName="Cart"
+         enableCountByExample="false" enableSelectByExample="false"
+         enableDeleteByExample="false" selectByExampleQueryId="false">
 
-        </table>
+         </table>-->
          <!-- user-->
-        <table tableName="mmall_user" domainObjectName="User"
-
-        enableCountByExample="false" enableSelectByExample="false"
-        enableDeleteByExample="false" selectByExampleQueryId="false"
-        enableUpdateByExample="false">
-
+        <!-- <table tableName="mmall_user" domainObjectName="User"
+         enableCountByExample="false" enableSelectByExample="false"
+         enableDeleteByExample="false" selectByExampleQueryId="false"
+         enableUpdateByExample="false">
+         </table>-->
+        <!-- category-->
+        <table tableName="mmall_category" domainObjectName="Category"
+               enableCountByExample="false" enableSelectByExample="false"
+               enableDeleteByExample="false" selectByExampleQueryId="false"
+               enableUpdateByExample="false">
         </table>
-
 
     </context>
 
