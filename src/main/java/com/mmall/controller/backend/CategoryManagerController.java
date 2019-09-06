@@ -30,10 +30,8 @@ public class CategoryManagerController {
     public ServerResponse addCategory(HttpSession session,
                                       String categoryName,
                                       @RequestParam(value = "parentId", defaultValue = "0") int parentId) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
-        }
+
+        User user = getCurrentUser(session);
         ServerResponse<User> response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
             //admin yes
@@ -57,6 +55,22 @@ public class CategoryManagerController {
         }
     }
 
+    @RequestMapping(value = "get_category.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse getChildrenParallelCategory(HttpSession session,
+                                                      @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
+
+        User user = getCurrentUser(session);
+        ServerResponse<User> response = userService.checkAdminRole(user);
+        if (response.isSuccess()) {
+            //admin yes
+            return categoryService.getChildrenParallelCategory(categoryId);
+
+        } else {
+            return ServerResponse.createByErrorMessage("no 权限");
+        }
+
+    }
     private User getCurrentUser(HttpSession session) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {

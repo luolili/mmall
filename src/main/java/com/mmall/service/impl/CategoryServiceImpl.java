@@ -4,12 +4,19 @@ import com.mmall.common.ServerResponse;
 import com.mmall.dao.CategoryMapper;
 import com.mmall.pojo.Category;
 import com.mmall.service.ICategoryService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service("iCategoryService")
 public class CategoryServiceImpl implements ICategoryService {
+
+    private Logger looger = LoggerFactory.getLogger(CategoryServiceImpl.class);
     @Autowired
     private CategoryMapper categoryMapper;
 
@@ -42,5 +49,14 @@ public class CategoryServiceImpl implements ICategoryService {
             return ServerResponse.createBySuccess("更新分类成功");
         }
         return ServerResponse.createByErrorMessage("更新分类失败");
+    }
+
+    @Override
+    public ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId) {
+        List<Category> categoryList = categoryMapper.selectCategoryChildrenByParentId(categoryId);
+        if (CollectionUtils.isEmpty(categoryList)) {
+            looger.info("为找到当前分类的子分类集合");
+        }
+        return ServerResponse.createBySuccess(categoryList);
     }
 }
