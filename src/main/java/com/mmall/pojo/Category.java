@@ -2,6 +2,7 @@ package com.mmall.pojo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 public class Category implements Serializable {
     /**
@@ -346,5 +347,19 @@ public class Category implements Serializable {
         sb.append(", updateTime=").append(updateTime);
         sb.append("]");
         return sb.toString();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return Objects.equals(id, category.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
