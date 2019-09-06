@@ -32,18 +32,16 @@ public class CategoryManagerController {
     public ServerResponse addCategory(HttpSession session,
                                       String categoryName,
                                       @RequestParam(value = "parentId", defaultValue = "0") int parentId) {
-
         User user = getCurrentUser(session);
         ServerResponse<User> response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
-            //admin yes
             return categoryService.addCategory(categoryName, parentId);
         } else {
             return ServerResponse.createByErrorMessage("no 权限");
         }
     }
 
-    @RequestMapping(value = "set_category_name.do", method = RequestMethod.POST)
+    @RequestMapping(value = "set_category_name.do", method = RequestMethod.PUT)
     @ResponseBody
     public ServerResponse setCategoryName(HttpSession session,
                                           String categoryName, Integer categoryId) {
@@ -57,7 +55,7 @@ public class CategoryManagerController {
         }
     }
 
-    @RequestMapping(value = "get_category.do", method = RequestMethod.POST)
+    @RequestMapping(value = "get_category.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse getChildrenParallelCategory(HttpSession session,
                                                       @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
