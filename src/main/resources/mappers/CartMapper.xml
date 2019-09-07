@@ -263,4 +263,16 @@
 
     </where>
   </update>
+
+  <select id="selectCartProductCountByUserId" parameterType="int" resultType="int">
+    select
+    ifnull(sum(quantity), 0)
+    from mmall_cart
+    <where>
+      <if test="userId != null">
+        and user_id = #{userId}
+      </if>
+    </where>
+  </select>
+
 </mapper>

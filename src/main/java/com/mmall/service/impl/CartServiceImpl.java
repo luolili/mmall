@@ -38,12 +38,12 @@ public class CartServiceImpl implements ICartService {
         }
         Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
         if (cart == null) {
-            cart = new Cart();
-            cart.setQuantity(count);
-            cart.setChecked(1);
-            cart.setUserId(userId);
-            cart.setProductId(productId);
-            cartMapper.insert(cart);
+            Cart cartItem = new Cart();
+            cartItem.setQuantity(count);
+            cartItem.setChecked(1);
+            cartItem.setUserId(userId);
+            cartItem.setProductId(productId);
+            cartMapper.insert(cartItem);
         } else {
             cart.setQuantity(cart.getQuantity() + count);
             cartMapper.updateByPrimaryKeySelective(cart);
@@ -92,6 +92,16 @@ public class CartServiceImpl implements ICartService {
         cartMapper.checkedOrUncheckedProduct(userId, checked, productId);
         return list(userId);
     }
+
+    @Override
+    public ServerResponse<Integer> getCartProductCount(Integer userId) {
+        if (userId == null) {
+            return ServerResponse.createBySuccess(0);
+        }
+        int result = cartMapper.selectCartProductCountByUserId(userId);
+        return ServerResponse.createBySuccess(result);
+    }
+
     private CartVO getCartVO(Integer userId) {
         CartVO cartVO = new CartVO();
         List<Cart> cartList = cartMapper.selectCartByUserId(userId);

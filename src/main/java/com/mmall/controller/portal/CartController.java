@@ -27,7 +27,7 @@ public class CartController {
     @Autowired
     private ICartService cartService;
 
-    @RequestMapping(value = "add.do", method = RequestMethod.PUT)
+    @RequestMapping(value = "add.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addToCart(HttpSession session, Integer count, Integer productId) {
 
@@ -72,7 +72,7 @@ public class CartController {
         return cartService.list(currentUser.getId());
     }
 
-    @RequestMapping(value = "select_all.do", method = RequestMethod.PUT)
+    @RequestMapping(value = "select_all.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse selectAll(HttpSession session) {
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
@@ -119,4 +119,14 @@ public class CartController {
         return cartService.selectOrUnselect(currentUser.getId(), Const.Cart.UN_CHECKED, productId);
     }
 
+    //获取用户的购物车里面的产品count
+    @RequestMapping(value = "get_cart_product_count.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<Integer> getCartProductCount(HttpSession session) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createBySuccess(0);
+        }
+        return cartService.getCartProductCount(currentUser.getId());
+    }
 }
