@@ -115,6 +115,21 @@
             </if>
         </trim>
     </insert>
+    <select id="selectByNameAndProductId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from mmall_product
+        <where>
+            <if test="productName != null">
+                and name like #{productName}
+            </if>
+            <if test="productId != null">
+                and id = #{productId}
+            </if>
+        </where>
+
+    </select>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.mmall.pojo.Product">
         <!--
           WARNING - @mbg.generated
@@ -159,4 +174,11 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mmall_product
+        order by id asc/* 不加分号*/
+    </select>
 </mapper>

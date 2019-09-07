@@ -8,6 +8,7 @@ import com.mmall.pojo.User;
 import com.mmall.service.ICategoryService;
 import com.mmall.service.IProductService;
 import com.mmall.service.IUserService;
+import com.mmall.vo.ProductDetailVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +32,7 @@ public class ProductManagerController {
     @Autowired
     private IProductService productService;
 
-
-    //管理员的login
+    // 产品save / update
     @RequestMapping(value = "save.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addCategory(HttpSession session,
@@ -61,29 +61,45 @@ public class ProductManagerController {
 
     @RequestMapping(value = "detail.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse getDetail(HttpSession session, Integer productId) {
+    public ServerResponse<ProductDetailVO> getDetail(HttpSession session, Integer productId) {
         User user = getCurrentUser(session);
         ServerResponse<User> response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
-            return productService.getDetail(productId);
+            return productService.manageProductDetail(productId);
         } else {
             return ServerResponse.createByErrorMessage("no 权限");
         }
     }
 
-    @RequestMapping(value = "get_deep_category.do", method = RequestMethod.POST)
+    @RequestMapping(value = "list.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse getCategoryAndDeepCategory(HttpSession session,
-                                                     @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
+    public ServerResponse getProductList(HttpSession session,
+                                         @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         User user = getCurrentUser(session);
         ServerResponse<User> response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
-            return categoryService.selectCategoryAndChildrenById(categoryId);
+            return productService.getProductList(pageNum, pageSize);
         } else {
             return ServerResponse.createByErrorMessage("no 权限");
         }
     }
 
+    @RequestMapping(value = "search.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse query(HttpSession session,
+                                @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                @RequestParam(value = "productName") String productName,
+                                @RequestParam(value = "productId") int productId,
+                                @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        User user = getCurrentUser(session);
+        ServerResponse<User> response = userService.checkAdminRole(user);
+        if (response.isSuccess()) {
+            return productService.searchProduct(productName, productId, pageNum, pageSize);
+        } else {
+            return ServerResponse.createByErrorMessage("no 权限");
+        }
+    }
     private User getCurrentUser(HttpSession session) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {

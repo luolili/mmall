@@ -1,5 +1,8 @@
 package com.mmall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.dao.CategoryMapper;
@@ -10,9 +13,13 @@ import com.mmall.service.IProductService;
 import com.mmall.util.DateTimeUtil;
 import com.mmall.util.PropertyUtil;
 import com.mmall.vo.ProductDetailVO;
+import com.mmall.vo.ProductListVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProductServiceImpl implements IProductService {
@@ -67,17 +74,18 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ServerResponse<ProductDetailVO> getDetail(Integer productId) {
+    public ServerResponse<ProductDetailVO> manageProductDetail(Integer productId) {
         if (productId == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),
                     ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
 
         Product product = productMapper.selectByPrimaryKey(productId);
-        if (product != null) {
-            return ServerResponse.createBySuccess();
+        if (product == null) {
+            return ServerResponse.createByErrorMessage("产品已经下架或删除");
         }
-        return ServerResponse.createByErrorMessage("产品已经下架或删除");
+        ProductDetailVO productDetailVO = assemble(product);
+        return ServerResponse.createBySuccess(productDetailVO);
     }
 
     private ProductDetailVO assemble(Product product) {
@@ -101,11 +109,59 @@ public class ProductServiceImpl implements IProductService {
         }
         productDetailVO.setImageHost(PropertyUtil
                 .getProperty("ftp.server.http.prefix", "http://img.happy.mmal.com/"));
-
         productDetailVO.setCreateTime(DateTimeUtil.dateToStr(product.getCreateTime()));
         productDetailVO.setUpdateTime(DateTimeUtil.dateToStr(product.getUpdateTime()));
         return productDetailVO;
+    }
 
+    @Override
+    public ServerResponse<PageInfo> getProductList(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Product> productList = productMapper.selectList();
+        List<ProductListVO> productListVOList = Lists.newArrayList();
+        productListVOList = getProductListVOList(productList);
+        return ServerResponse.createBySuccess(getPageInfo(productList, productListVOList));
+    }
 
+    @Override
+    public ServerResponse<PageInfo> searchProduct(String productName, int productId, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        if (StringUtils.isNotBlank(productName)) {
+            productName = new StringBuilder()
+                    .append("%").append(productName).append("%").toString();
+        }
+        List<Product> productList = productMapper.selectByNameAndProductId(productName, productId);
+        List<ProductListVO> productListVOList = Lists.newArrayList();
+        productListVOList = getProductListVOList(productList);
+        return ServerResponse.createBySuccess(getPageInfo(productList, productListVOList));
+    }
+
+    private List<ProductListVO> getProductListVOList(List<Product> productList) {
+        List<ProductListVO> productListVOList = Lists.newArrayList();
+        for (Product product : productList) {
+            ProductListVO productListVO = assembleProductListVO(product);
+            productListVOList.add(productListVO);
+        }
+        return productListVOList;
+    }
+
+    private PageInfo getPageInfo(List<Product> productList, List<ProductListVO> productListVOList) {
+        PageInfo pageInfo = new PageInfo(productList);
+        pageInfo.setList(productListVOList);
+        return pageInfo;
+    }
+
+    private ProductListVO assembleProductListVO(Product product) {
+        ProductListVO productListVO = new ProductListVO();
+
+        productListVO.setId(product.getId());
+        productListVO.setCategoryId(product.getCategoryId());
+        productListVO.setPrice(product.getPrice());
+        productListVO.setName(product.getName());
+        productListVO.setImageHost(PropertyUtil
+                .getProperty("ftp.server.http.prefix", "http://img.happy.mmal.com/"));
+        productListVO.setSubtitle(product.getSubtitle());
+        productListVO.setStatus(product.getStatus());
+        return productListVO;
     }
 }

@@ -1,11 +1,9 @@
 package com.mmall.dao;
 
 import com.mmall.pojo.Product;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 public interface ProductMapper {
     /**
@@ -96,4 +94,9 @@ public interface ProductMapper {
             "where id = #{id,jdbcType=INTEGER}"
     })
     int updateByPrimaryKey(Product record);
+
+    List<Product> selectList();
+
+    List<Product> selectByNameAndProductId(@Param("productName") String productName,
+                                           @Param("productId") int productId);
 }
