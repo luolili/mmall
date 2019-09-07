@@ -61,4 +61,62 @@ public class CartController {
         return cartService.deleteProduct(currentUser.getId(), productIds);
     }
 
+    @RequestMapping(value = "list.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse query(HttpSession session) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return cartService.list(currentUser.getId());
+    }
+
+    @RequestMapping(value = "select_all.do", method = RequestMethod.PUT)
+    @ResponseBody
+    public ServerResponse selectAll(HttpSession session) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return cartService.selectOrUnselect(currentUser.getId(), Const.Cart.CHECKED, null);
+    }
+
+    //全不选
+    @RequestMapping(value = "unselect_all.do", method = RequestMethod.PUT)
+    @ResponseBody
+    public ServerResponse unselectAll(HttpSession session, Integer productId) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return cartService.selectOrUnselect(currentUser.getId(), Const.Cart.UN_CHECKED, null);
+    }
+
+    //选一个
+    @RequestMapping(value = "select_one.do", method = RequestMethod.PUT)
+    @ResponseBody
+    public ServerResponse selectOne(HttpSession session, Integer productId) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return cartService.selectOrUnselect(currentUser.getId(), Const.Cart.CHECKED, productId);
+    }
+
+    //取消选一个
+    @RequestMapping(value = "unselect_one.do", method = RequestMethod.PUT)
+    @ResponseBody
+    public ServerResponse unselectOne(HttpSession session, Integer productId) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return cartService.selectOrUnselect(currentUser.getId(), Const.Cart.UN_CHECKED, productId);
+    }
+
 }

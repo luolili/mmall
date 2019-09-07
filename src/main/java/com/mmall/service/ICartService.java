@@ -9,4 +9,9 @@ public interface ICartService {
     ServerResponse update(Integer userId, Integer count, Integer productId);
 
     ServerResponse deleteProduct(Integer userId, String productIds);
+
+    ServerResponse list(Integer userId);
+
+
+    ServerResponse selectOrUnselect(Integer userId, Integer checked, Integer productId);
 }
