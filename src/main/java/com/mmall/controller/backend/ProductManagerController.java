@@ -36,8 +36,6 @@ public class ProductManagerController {
     @Autowired
     private IUserService userService;
     @Autowired
-    private ICategoryService categoryService;
-    @Autowired
     private IProductService productService;
     @Autowired
     private IFileService fileService;
