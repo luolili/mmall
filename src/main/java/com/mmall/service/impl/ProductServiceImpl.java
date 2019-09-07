@@ -7,6 +7,7 @@ import com.mmall.dao.ProductMapper;
 import com.mmall.pojo.Category;
 import com.mmall.pojo.Product;
 import com.mmall.service.IProductService;
+import com.mmall.util.DateTimeUtil;
 import com.mmall.util.PropertyUtil;
 import com.mmall.vo.ProductDetailVO;
 import org.apache.commons.lang.StringUtils;
@@ -101,6 +102,8 @@ public class ProductServiceImpl implements IProductService {
         productDetailVO.setImageHost(PropertyUtil
                 .getProperty("ftp.server.http.prefix", "http://img.happy.mmal.com/"));
 
+        productDetailVO.setCreateTime(DateTimeUtil.dateToStr(product.getCreateTime()));
+        productDetailVO.setUpdateTime(DateTimeUtil.dateToStr(product.getUpdateTime()));
         return productDetailVO;
 
 

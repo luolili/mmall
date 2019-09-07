@@ -1,7 +1,6 @@
 package com.mmall.vo;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 public class ProductDetailVO {
 
@@ -18,8 +17,8 @@ public class ProductDetailVO {
     private Integer stock;
     private Integer status;
 
-    private Date createTime;
-    private Date updateTime;
+    private String createTime;//string
+    private String updateTime;
 
     private String imageHost;//图片服务器前缀
     private Integer parentCategoryId;
@@ -104,19 +103,19 @@ public class ProductDetailVO {
         this.status = status;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
 
