@@ -14,8 +14,15 @@
 fe：chrome插件； restlet client/postman
 
 2.MappingJackson2HttpMessageConverter:spring5在配置的时候，
-会出现fasterjackson的类找不到，
+会出现faster jackson的类找不到，
 加入相关依赖，重启。
 
 3. dao--pojo ; service-- bo:business object ;
  web--vo:value 
+ 
+ 4.mybatis  There is no getter for property named 'userId' 
+ in 'class java.lang.Integer
+ 
+ 解决方法：最好不要在xml里面进行if判断。
+ 
+ 5. column id cannot be null:数据库设置主键自增。
