@@ -58,7 +58,14 @@
          enableUpdateByExample="false">
          </table>-->
         <!-- category-->
-        <table tableName="mmall_category" domainObjectName="Category"
+        <!--  <table tableName="mmall_category" domainObjectName="Category"
+                 enableCountByExample="false" enableSelectByExample="false"
+                 enableDeleteByExample="false" selectByExampleQueryId="false"
+                 enableUpdateByExample="false">
+          </table>-->
+
+        <!-- product -->
+        <table tableName="mmall_product" domainObjectName="Product"
                enableCountByExample="false" enableSelectByExample="false"
                enableDeleteByExample="false" selectByExampleQueryId="false"
                enableUpdateByExample="false">

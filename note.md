@@ -16,3 +16,6 @@ fe：chrome插件； restlet client/postman
 2.MappingJackson2HttpMessageConverter:spring5在配置的时候，
 会出现fasterjackson的类找不到，
 加入相关依赖，重启。
+
+3. dao--pojo ; service-- bo:business object ;
+ web--vo:value 
