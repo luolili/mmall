@@ -33,7 +33,7 @@ public class ProductManagerController {
 
 
     //管理员的login
-    @RequestMapping(value = "add_product.do", method = RequestMethod.POST)
+    @RequestMapping(value = "save.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addCategory(HttpSession session,
                                       Product product) {
@@ -46,28 +46,26 @@ public class ProductManagerController {
         }
     }
 
-    @RequestMapping(value = "set_category_name.do", method = RequestMethod.PUT)
+    @RequestMapping(value = "set_sale_status.do", method = RequestMethod.PUT)
     @ResponseBody
-    public ServerResponse setCategoryName(HttpSession session,
-                                          String categoryName, Integer categoryId) {
+    public ServerResponse<String> setSaleStatus(HttpSession session,
+                                                Integer status, Integer productId) {
         User user = getCurrentUser(session);
         ServerResponse<User> response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
-            //admin yes
-            return categoryService.updateCategoryName(categoryId, categoryName);
+            return productService.setSaleStatus(productId, status);
         } else {
             return ServerResponse.createByErrorMessage("no 权限");
         }
     }
 
-    @RequestMapping(value = "get_category.do", method = RequestMethod.GET)
+    @RequestMapping(value = "detail.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse getChildrenParallelCategory(HttpSession session,
-                                                      @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
+    public ServerResponse getDetail(HttpSession session, Integer productId) {
         User user = getCurrentUser(session);
         ServerResponse<User> response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
-            return categoryService.getChildrenParallelCategory(categoryId);
+            return productService.getDetail(productId);
         } else {
             return ServerResponse.createByErrorMessage("no 权限");
         }
