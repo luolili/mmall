@@ -1,22 +1,30 @@
 package com.mmall.controller.backend;
 
+import com.google.common.collect.Maps;
 import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Product;
 import com.mmall.pojo.User;
 import com.mmall.service.ICategoryService;
+import com.mmall.service.IFileService;
 import com.mmall.service.IProductService;
 import com.mmall.service.IUserService;
+import com.mmall.util.PropertyUtil;
 import com.mmall.vo.ProductDetailVO;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 /**
  * 后台 强制登陆
@@ -31,6 +39,8 @@ public class ProductManagerController {
     private ICategoryService categoryService;
     @Autowired
     private IProductService productService;
+    @Autowired
+    private IFileService fileService;
 
     // 产品save / update
     @RequestMapping(value = "save.do", method = RequestMethod.POST)
@@ -38,7 +48,7 @@ public class ProductManagerController {
     public ServerResponse addCategory(HttpSession session,
                                       Product product) {
         User user = getCurrentUser(session);
-        ServerResponse<User> response = userService.checkAdminRole(user);
+        ServerResponse response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
             return productService.saveOrUpdate(product);
         } else {
@@ -51,7 +61,7 @@ public class ProductManagerController {
     public ServerResponse<String> setSaleStatus(HttpSession session,
                                                 Integer status, Integer productId) {
         User user = getCurrentUser(session);
-        ServerResponse<User> response = userService.checkAdminRole(user);
+        ServerResponse response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
             return productService.setSaleStatus(productId, status);
         } else {
@@ -61,9 +71,9 @@ public class ProductManagerController {
 
     @RequestMapping(value = "detail.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<ProductDetailVO> getDetail(HttpSession session, Integer productId) {
+    public ServerResponse getDetail(HttpSession session, Integer productId) {
         User user = getCurrentUser(session);
-        ServerResponse<User> response = userService.checkAdminRole(user);
+        ServerResponse response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
             return productService.manageProductDetail(productId);
         } else {
@@ -77,7 +87,7 @@ public class ProductManagerController {
                                          @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                                          @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         User user = getCurrentUser(session);
-        ServerResponse<User> response = userService.checkAdminRole(user);
+        ServerResponse response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
             return productService.getProductList(pageNum, pageSize);
         } else {
@@ -93,12 +103,49 @@ public class ProductManagerController {
                                 @RequestParam(value = "productId") int productId,
                                 @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         User user = getCurrentUser(session);
-        ServerResponse<User> response = userService.checkAdminRole(user);
+        ServerResponse response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
             return productService.searchProduct(productName, productId, pageNum, pageSize);
         } else {
             return ServerResponse.createByErrorMessage("no 权限");
         }
+    }
+
+    @RequestMapping(value = "upload.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse upload(MultipartFile file, HttpServletRequest request) {
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String targetFileName = fileService.upload(file, path);
+        String url = PropertyUtil.getProperty("ftp.server.http.prefix")
+                + targetFileName;
+        Map fileMap = Maps.newHashMap();
+        fileMap.put("uri", targetFileName);
+        fileMap.put("url", url);
+        return ServerResponse.createBySuccess(fileMap);
+    }
+
+    //simditor
+    @RequestMapping(value = "rich_text.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse richtextUpload(MultipartFile file,
+                                         HttpServletRequest request,
+                                         HttpServletResponse response) {
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String targetFileName = fileService.upload(file, path);
+        String url = PropertyUtil.getProperty("ftp.server.http.prefix")
+                + targetFileName;
+        Map resultMap = Maps.newHashMap();
+        if (StringUtils.isBlank(targetFileName)) {
+            resultMap.put("success", false);
+            resultMap.put("msg", "上传失败");
+            return ServerResponse.createBySuccess(resultMap);
+        }
+        resultMap.put("success", true);
+        resultMap.put("msg", "上传成功");
+        resultMap.put("uri", targetFileName);
+        resultMap.put("url", url);
+        response.addHeader("Access-Control-Allow-Headers", "X-File-Name");
+        return ServerResponse.createBySuccess(resultMap);
     }
     private User getCurrentUser(HttpSession session) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
