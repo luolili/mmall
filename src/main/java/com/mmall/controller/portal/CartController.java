@@ -4,6 +4,7 @@ import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
+import com.mmall.service.ICartService;
 import com.mmall.service.IProductService;
 import com.mmall.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,10 @@ public class CartController {
     @Autowired
     private IProductService productService;
 
-    @RequestMapping(value = "add.do", method = RequestMethod.GET)
+    @Autowired
+    private ICartService cartService;
+
+    @RequestMapping(value = "add.do", method = RequestMethod.PUT)
     @ResponseBody
     public ServerResponse addToCart(HttpSession session, Integer count, Integer productId) {
 
@@ -32,22 +36,29 @@ public class CartController {
             return ServerResponse.createByErrorCodeMessage(
                     ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
         }
-        return userService.getInformation(currentUser.getId());
-
+        return cartService.add(currentUser.getId(), count, productId);
     }
 
-    //可以 不必加 method = RequestMethod.POST
-    @RequestMapping(value = "search.do", method = RequestMethod.POST)
+    @RequestMapping(value = "update.do", method = RequestMethod.PUT)
     @ResponseBody
-    public ServerResponse query(@RequestParam(value = "keyword", required = false) String keyword,
-                                @RequestParam(value = "categoryId") int categoryId,
-                                @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-                                @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
-                                @RequestParam(value = "orderBy", defaultValue = "") String orderBy
-    ) {
-        return ServerResponse.createBySuccess(productService.getProductByKeywordCategory(keyword, categoryId, pageNum, pageSize, orderBy));
-
+    public ServerResponse update(HttpSession session, Integer count, Integer productId) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return cartService.update(currentUser.getId(), count, productId);
     }
 
+    @RequestMapping(value = "delete_product.do", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ServerResponse deleteProduct(HttpSession session, String productIds) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return cartService.deleteProduct(currentUser.getId(), productIds);
+    }
 
 }

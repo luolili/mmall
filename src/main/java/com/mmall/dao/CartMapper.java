@@ -115,4 +115,6 @@ public interface CartMapper {
     );
 
     int selectCartProductCheckedStatusByUserId(Integer userId);
+
+    int deleteCartByUserIdProductIds(@Param("userId") Integer userId, @Param("productIdList") List<String> productIdList);
 }

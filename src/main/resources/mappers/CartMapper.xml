@@ -219,7 +219,7 @@
       </if>
     </where>
   </select>
-  <select id="selectCartProductCheckedStatusByUserId" parameterType="int" resultMap="BaseResultMap">
+  <select id="selectCartProductCheckedStatusByUserId" parameterType="int" resultType="int">
     select
     count(1)
     from mmall_cart
@@ -231,5 +231,23 @@
     </where>
   </select>
 
+  <delete id="">
 
+    delete from mmall_cart
+    <where>
+      <if test="userId != null">
+        and user_id = #{userId}
+
+      </if>
+      <if test="productIdList != null">
+        and product_id in
+        <foreach collection="productIdList" item="item" index="index" open="(" close=")" separator=",">
+          #{item}
+
+        </foreach>
+      </if>
+
+
+    </where>
+  </delete>
 </mapper>
