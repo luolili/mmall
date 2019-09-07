@@ -114,4 +114,5 @@ public interface CartMapper {
     List<Cart> selectCartByUserId(@Param("userId") int userId
     );
 
+    int selectCartProductCheckedStatusByUserId(Integer userId);
 }

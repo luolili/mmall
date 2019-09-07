@@ -219,6 +219,17 @@
       </if>
     </where>
   </select>
+  <select id="selectCartProductCheckedStatusByUserId" parameterType="int" resultMap="BaseResultMap">
+    select
+    count(1)
+    from mmall_cart
+    <where>
+      and checked = 0
+      <if test="userId !=null">
+        and user_id = #{userId}
+      </if>
+    </where>
+  </select>
 
 
 </mapper>
