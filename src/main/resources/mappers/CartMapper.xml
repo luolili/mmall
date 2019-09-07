@@ -200,14 +200,9 @@
     select
     <include refid="Base_Column_List"/>
     from mmall_cart
-    <where>
-      <if test="userId !=null">
-        and user_id = #{userId}
-      </if>
-      <if test="productId !=null">
-        and product_id = #{productId}
-      </if>
-    </where>
+    where user_id = #{userId}
+    and product_id = #{productId}
+
   </select>
   <select id="selectCartByUserId" parameterType="int" resultMap="BaseResultMap">
     select
@@ -266,7 +261,7 @@
 
   <select id="selectCartProductCountByUserId" parameterType="int" resultType="int">
     select
-    ifnull(sum(quantity), 0)
+    ifnull(sum(quantity),0)
     from mmall_cart
     <where>
       <if test="userId != null">
