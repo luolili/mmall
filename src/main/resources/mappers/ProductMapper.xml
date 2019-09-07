@@ -184,7 +184,7 @@
 
     </select>
     <!-- 参数是集合 -->
-    <select id="selectByNameAndProductIds" resultMap="BaseResultMap" parameterType="map">
+    <select id="selectByNameAndCategoryIds" resultMap="BaseResultMap" parameterType="map">
         select
         <include refid="Base_Column_List"/>
         from mmall_product
@@ -193,7 +193,7 @@
                 and name like #{productName}
             </if>
             <if test="categoryIdList != null">
-                and id in
+                and category_id in
                 <foreach collection="categoryIdList" item="item" index="index" open="(" close=")" separator=",">
                     #{item}
                 </foreach>

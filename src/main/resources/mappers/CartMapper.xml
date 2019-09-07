@@ -194,4 +194,31 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectCartByUserIdProductId" parameterType="map" resultMap="BaseResultMap">
+
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_cart
+    <where>
+      <if test="userId !=null">
+        and user_id = #{userId}
+      </if>
+      <if test="productId !=null">
+        and product_id = #{productId}
+      </if>
+    </where>
+  </select>
+  <select id="selectCartByUserId" parameterType="int" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mmall_cart
+    <where>
+      <if test="userId !=null">
+        and user_id = #{userId}
+      </if>
+    </where>
+  </select>
+
+
 </mapper>

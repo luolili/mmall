@@ -2,12 +2,15 @@ package com.mmall.dao;
 
 import com.mmall.pojo.Cart;
 import com.mmall.pojo.CartExample;
+import com.mmall.pojo.Product;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 public interface CartMapper {
     /**
@@ -104,4 +107,11 @@ public interface CartMapper {
         "where id = #{id,jdbcType=INTEGER}"
     })
     int updateByPrimaryKey(Cart record);
+
+    Cart selectCartByUserIdProductId(@Param("userId") int userId,
+                                     @Param("productId") int productId);
+
+    List<Cart> selectCartByUserId(@Param("userId") int userId
+    );
+
 }

@@ -219,7 +219,7 @@ public class ProductServiceImpl implements IProductService {
         }
         keyword = (StringUtils.isBlank(keyword) ? null : keyword);
         categoryIdList = (CollectionUtils.isEmpty(categoryIdList) ? null : categoryIdList);
-        List<Product> productList = productMapper.selectByNameAndProductIds(keyword, categoryIdList);
+        List<Product> productList = productMapper.selectByNameAndCategoryIds(keyword, categoryIdList);
         List<ProductListVO> productListVOList = getProductListVOList(productList);
         return ServerResponse.createBySuccess(getPageInfo(productList, productListVOList));
     }

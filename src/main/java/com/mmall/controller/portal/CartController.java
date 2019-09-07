@@ -1,7 +1,9 @@
 package com.mmall.controller.portal;
 
-import com.github.pagehelper.PageInfo;
+import com.mmall.common.Const;
+import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
+import com.mmall.pojo.User;
 import com.mmall.service.IProductService;
 import com.mmall.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +16,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("product/")
-public class ProductController {
+@RequestMapping("cart/")
+public class CartController {
     @Autowired
     private IUserService userService;
     @Autowired
     private IProductService productService;
 
-    @RequestMapping(value = "detail.do", method = RequestMethod.GET)
+    @RequestMapping(value = "add.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse getDetail(HttpSession session, Integer productId) {
-        return productService.getProductDetail(productId);
+    public ServerResponse addToCart(HttpSession session, Integer count, Integer productId) {
+
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return userService.getInformation(currentUser.getId());
 
     }
 
