@@ -161,10 +161,24 @@
     </update>
 
     <delete id="deleteByUserIdShippingId" parameterType="map">
-
         delete
         from mmall_shipping
         where user_id = #{userId}
           and id = #{shippingId}
     </delete>
+
+    <select id="selectByUserIdShippingId" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mmall_shipping
+        where user_id = #{userId}
+        and id = #{shippingId}
+    </select>
+
+    <select id="selectByUserId" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mmall_shipping
+        where user_id = #{userId}
+    </select>
 </mapper>
