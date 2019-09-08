@@ -77,11 +77,25 @@
                  enableUpdateByExample="false">
           </table>-->
         <!-- pay info-->
-        <table tableName="mmall_pay_info" domainObjectName="PayInfo"
+        <!-- <table tableName="mmall_pay_info" domainObjectName="PayInfo"
+                enableCountByExample="false" enableSelectByExample="false"
+                enableDeleteByExample="false" selectByExampleQueryId="false"
+                enableUpdateByExample="false">
+         </table>-->
+
+        <!-- order -->
+        <!-- <table tableName="mmall_order" domainObjectName="Order"
+                enableCountByExample="false" enableSelectByExample="false"
+                enableDeleteByExample="false" selectByExampleQueryId="false"
+                enableUpdateByExample="false">
+         </table>-->
+        <!-- order -->
+        <table tableName="mmall_order_item" domainObjectName="OrderItem"
                enableCountByExample="false" enableSelectByExample="false"
                enableDeleteByExample="false" selectByExampleQueryId="false"
                enableUpdateByExample="false">
         </table>
+
 
     </context>
 

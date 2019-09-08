@@ -30,7 +30,6 @@ public class CartController {
     @RequestMapping(value = "add.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addToCart(HttpSession session, Integer count, Integer productId) {
-
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null) {
             return ServerResponse.createByErrorCodeMessage(
