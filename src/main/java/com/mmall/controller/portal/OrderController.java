@@ -4,6 +4,8 @@ import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
+import com.mmall.service.IOrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("order/")
 public class OrderController {
 
+    @Autowired
+    private IOrderService orderService;
     public ServerResponse pay(HttpSession session, Long orderNo, HttpServletRequest request) {
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null) {
@@ -22,5 +26,7 @@ public class OrderController {
         }
         String path = request.getSession().getServletContext().getRealPath("upload");
 
+        return ServerResponse.createBySuccess(
+                orderService.pay(orderNo, currentUser.getId(), path));
     }
 }

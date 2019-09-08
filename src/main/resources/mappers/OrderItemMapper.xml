@@ -179,4 +179,14 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
+
+    <select id="getByUserIdOrderNo" resultMap="BaseResultMap" parameterType="map">
+
+        select
+        <include refid="Base_Column_List"/>
+        from mmall_order_item
+        where user_id = #{userId}
+        and
+        order_no = #{orderNo}
+    </select>
 </mapper>

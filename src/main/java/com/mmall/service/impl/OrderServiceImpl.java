@@ -1,14 +1,18 @@
 package com.mmall.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.mmall.common.ServerResponse;
+import com.mmall.dao.OrderItemMapper;
 import com.mmall.dao.OrderMapper;
 import com.mmall.pojo.Order;
+import com.mmall.pojo.OrderItem;
 import com.mmall.service.IOrderService;
+import com.mmall.util.BigDecimalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -16,7 +20,10 @@ public class OrderServiceImpl implements IOrderService {
 
     @Autowired
     private OrderMapper orderMapper;
+    @Autowired
+    private OrderItemMapper orderItemMapper;
 
+    @Override
     public ServerResponse pay(Long orderNo, Integer userId, String path) {
         Map<String, String> resultMap = Maps.newHashMap();
         Order order = orderMapper.selectByUserIdOrderNo(userId, orderNo);
@@ -49,6 +56,18 @@ public class OrderServiceImpl implements IOrderService {
         //-8 支付timeout时间
         String timeoutExpress = "120m";
 
+        // 商品的明细
+        List<GoodsDetail> orderDetailList = new ArrayList<>();
+        List<OrderItem> orderItemList = orderItemMapper.getByUserIdOrderNo(userId, orderNo);
+
+        for (OrderItem orderItem : orderItemList) {
+
+            GoodsDetail goodsDetail = GoodsDetail.newInstance(orderItem.getProductId(),
+                    BigDecimalUtil.multiply(orderItem.getCurrentUnitPrice().doubleValue(), 100),
+                    orderItem.getQuantity());
+
+            orderDetailList.add(goodsDetail);
+        }
 
         return null;
     }
