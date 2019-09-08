@@ -22,12 +22,7 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("shipping/")
 public class ShippingController {
     @Autowired
-    private IUserService userService;
-    @Autowired
     private IShippingService shippingService;
-
-    @Autowired
-    private ICartService cartService;
 
     @RequestMapping(value = "add.do", method = RequestMethod.POST)
     @ResponseBody

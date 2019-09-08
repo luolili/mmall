@@ -71,7 +71,13 @@
                          enableUpdateByExample="false">
      </table>-->
         <!-- shipping-->
-        <table tableName="mmall_shipping" domainObjectName="Shipping"
+        <!--  <table tableName="mmall_shipping" domainObjectName="Shipping"
+                 enableCountByExample="false" enableSelectByExample="false"
+                 enableDeleteByExample="false" selectByExampleQueryId="false"
+                 enableUpdateByExample="false">
+          </table>-->
+        <!-- pay info-->
+        <table tableName="mmall_pay_info" domainObjectName="PayInfo"
                enableCountByExample="false" enableSelectByExample="false"
                enableDeleteByExample="false" selectByExampleQueryId="false"
                enableUpdateByExample="false">
