@@ -27,6 +27,15 @@ public class OrderController {
     @Autowired
     private IOrderService orderService;
 
+    public ServerResponse create(HttpSession session, Integer shippingId) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+
+
+    }
     @RequestMapping(value = "pay.do", method = RequestMethod.PUT)
     @ResponseBody
     public ServerResponse pay(HttpSession session, Long orderNo, HttpServletRequest request) {

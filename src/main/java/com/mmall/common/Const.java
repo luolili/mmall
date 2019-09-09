@@ -27,13 +27,72 @@ public class Const {
     public enum ProductStatusEnum {
         ON_SALE(1, "在线"),
         on_sale(2, "在线"),
-        //on_sale(2,"在线"),
-
         ;
         private int code;
         private String value;
 
         ProductStatusEnum(int code, String value) {
+            this.value = value;
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum OrderStatusEnum {
+        NO_PAY(1, "未付款"),
+        PAYED(2, "已付款"),
+        ;
+        private int code;
+        private String value;
+
+        OrderStatusEnum(int code, String value) {
+            this.value = value;
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum PayPlatformEnum {
+        ALI_PAY(1, "支付宝"),
+        ;
+        private int code;
+        private String value;
+
+        PayPlatformEnum(int code, String value) {
+            this.value = value;
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum PaymentTypeEnum {
+        ONLINE_PAY(1, "在线支付"),
+        ;
+        private int code;
+        private String value;
+
+        PaymentTypeEnum(int code, String value) {
             this.value = value;
             this.code = code;
         }

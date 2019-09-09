@@ -1,16 +1,23 @@
 package com.mmall.service.impl;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
+import com.mmall.dao.CartMapper;
 import com.mmall.dao.OrderItemMapper;
 import com.mmall.dao.OrderMapper;
-import com.mmall.pojo.Order;
-import com.mmall.pojo.OrderItem;
+import com.mmall.dao.ProductMapper;
+import com.mmall.pojo.*;
 import com.mmall.service.IOrderService;
 import com.mmall.util.BigDecimalUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.text.Bidi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +28,89 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
+    private CartMapper cartMapper;
+
+    @Autowired
     private OrderItemMapper orderItemMapper;
 
+
+    public ServerResponse createOrder(Integer userId, Integer shippingId) {
+        //从购物车里面获取信息
+        List<Cart> cartList = cartMapper.selectCheckedCartByUserId(userId);
+        ServerResponse<List<OrderItem>> response = getOrderItem(userId, cartList);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        List<OrderItem> orderItemList = response.getData();
+        BigDecimal payment = getOrderTotalPrice(orderItemList);
+
+
+        return null;
+    }
+
+    private Order assembleOrder(Integer userId, Integer shippingId, BigDecimal payment) {
+        Order order = new Order();
+        long orderNo = generateOrderNo();
+        order.setStatus(Const.OrderStatusEnum.NO_PAY.getCode());
+        order.setPostage(0);
+        order.setPaymentType(Const.PaymentTypeEnum.ONLINE_PAY.getCode());
+
+        order.setPayment(payment);
+        order.setUserId(userId);
+        order.setShippingId(shippingId);
+        return order;
+    }
+
+    private long generateOrderNo() {
+        long currentTimeMillis = System.currentTimeMillis();
+        return currentTimeMillis + currentTimeMillis % 9;
+    }
+
+    private BigDecimal getOrderTotalPrice(List<OrderItem> orderItemList) {
+        BigDecimal result = new BigDecimal("0");
+        for (OrderItem orderItem : orderItemList) {
+            BigDecimalUtil.add(result.doubleValue(), orderItem.getTotalPrice().doubleValue())
+        }
+        return result;
+    }
+
+    public ServerResponse<List<OrderItem>> getOrderItem(Integer userId, List<Cart> cartList) {
+        List<OrderItem> orderItemList = Lists.newArrayList();
+        if (CollectionUtils.isEmpty(cartList)) {
+            return ServerResponse.createByErrorMessage("购物车为空");
+        }
+        for (Cart cart : cartList) {
+            OrderItem orderItem = new OrderItem();
+            Product product = productMapper.selectByPrimaryKey(cart.getProductId());
+
+            if (product.getStock() != Const.ProductStatusEnum.ON_SALE.getCode()) {
+                return ServerResponse.createByErrorMessage("产品：" + product.getName() + "不在售卖状态");
+            }
+            //校验库存
+            if (cart.getQuantity() > product.getStock()) {
+                return ServerResponse.createByErrorMessage("产品：" + product.getName() + "库存不足");
+            }
+            orderItem.setUserId(userId);
+            orderItem.setProductId(product.getId());
+            orderItem.setProductName(product.getName());
+            orderItem.setProductImage(product.getMainImage());
+            BigDecimal price = product.getPrice();
+            orderItem.setCurrentUnitPrice(price);
+            orderItem.setQuantity(cart.getQuantity());
+            orderItem.setTotalPrice(BigDecimalUtil.multiply(
+                    price.doubleValue(), cart.getQuantity()));
+            orderItemList.add(orderItem);
+            return ServerResponse.createBySuccess(orderItemList);
+        }
+
+
+    }
+
+
+    // ----------pay
     @Override
     public ServerResponse pay(Long orderNo, Integer userId, String path) {
         Map<String, String> resultMap = Maps.newHashMap();

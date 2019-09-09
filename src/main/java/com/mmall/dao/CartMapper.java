@@ -125,5 +125,6 @@ public interface CartMapper {
                                   @Param("productId") Integer productId
     );
 
+    List<Cart> selectCheckedCartByUserId(Integer userId);
 
 }
