@@ -52,19 +52,37 @@ public class OrderServiceImpl implements IOrderService {
         BigDecimal payment = getOrderTotalPrice(orderItemList);
         // 生成订单
         Order order = assembleOrder(userId, shippingId, payment);
-
         if (order == null) {
             return ServerResponse.createByErrorMessage("生成订单错误");
         }
-
         for (OrderItem orderItem : orderItemList) {
             orderItem.setOrderNo(order.getOrderNo());
         }
-
         //mybatis 批量插入
+        orderItemMapper.batchInsert(orderItemList);
+        //减少商品库存
+        reduceProductStock(orderItemList);
+        clearCart(cartList);
+//返回给前台数据
+
         return null;
     }
 
+    private void clearCart(List<Cart> cartList) {
+        for (Cart cart : cartList) {
+
+            cartMapper.deleteByPrimaryKey(cart.getId());
+        }
+    }
+
+    private void reduceProductStock(List<OrderItem> orderItemList) {
+        for (OrderItem orderItem : orderItemList) {
+            Product product = productMapper.selectByPrimaryKey(orderItem.getProductId());
+            product.setStock(product.getStock() - orderItem.getQuantity());
+            productMapper.updateByPrimaryKeySelective(product);
+        }
+
+    }
     private Order assembleOrder(Integer userId, Integer shippingId, BigDecimal payment) {
         Order order = new Order();
         long orderNo = generateOrderNo();
@@ -92,7 +110,7 @@ public class OrderServiceImpl implements IOrderService {
     private BigDecimal getOrderTotalPrice(List<OrderItem> orderItemList) {
         BigDecimal result = new BigDecimal("0");
         for (OrderItem orderItem : orderItemList) {
-            result = BigDecimalUtil.add(result.doubleValue(), orderItem.getTotalPrice().doubleValue())
+            result = BigDecimalUtil.add(result.doubleValue(), orderItem.getTotalPrice().doubleValue());
         }
         return result;
     }
@@ -123,10 +141,8 @@ public class OrderServiceImpl implements IOrderService {
             orderItem.setTotalPrice(BigDecimalUtil.multiply(
                     price.doubleValue(), cart.getQuantity()));
             orderItemList.add(orderItem);
-            return ServerResponse.createBySuccess(orderItemList);
         }
-
-
+        return ServerResponse.createBySuccess(orderItemList);
     }
 
 
@@ -165,17 +181,15 @@ public class OrderServiceImpl implements IOrderService {
         String timeoutExpress = "120m";
 
         // 商品的明细
-        List<GoodsDetail> orderDetailList = new ArrayList<>();
+      /*  List<GoodsDetail> orderDetailList = new ArrayList<>();
         List<OrderItem> orderItemList = orderItemMapper.getByUserIdOrderNo(userId, orderNo);
-
         for (OrderItem orderItem : orderItemList) {
-
             GoodsDetail goodsDetail = GoodsDetail.newInstance(orderItem.getProductId(),
                     BigDecimalUtil.multiply(orderItem.getCurrentUnitPrice().doubleValue(), 100),
                     orderItem.getQuantity());
 
             orderDetailList.add(goodsDetail);
-        }
+        }*/
 
         return null;
     }

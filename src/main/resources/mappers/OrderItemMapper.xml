@@ -262,14 +262,6 @@
             )
 
         </foreach>
-        #{totalPrice,jdbcType=DECIMAL},
-        #{quantity,jdbcType=INTEGER},
-        #{paymentTime,jdbcType=TIMESTAMP},
-        #{sendTime,jdbcType=TIMESTAMP},
-        #{endTime,jdbcType=TIMESTAMP},
-        #{closeTime,jdbcType=TIMESTAMP},
-        #{createTime,jdbcType=TIMESTAMP},
-        #{updateTime,jdbcType=TIMESTAMP}
 
     </insert>
 </mapper>
