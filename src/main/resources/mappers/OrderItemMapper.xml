@@ -200,4 +200,76 @@
         and
         order_no = #{orderNo}
     </select>
+
+
+    <insert id="batchInsert" parameterType="list">
+        insert into mmall_order_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="productImage != null">
+                product_image,
+            </if>
+            <if test="currentUnitPrice != null">
+                current_unit_price,
+            </if>
+            <if test="totalPrice != null">
+                total_price,
+            </if>
+            <if test="quantity != null">
+                quantity,
+            </if>
+            <if test="paymentTime != null">
+                payment_time,
+            </if>
+            <if test="sendTime != null">
+                send_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="closeTime != null">
+                close_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        values
+        <foreach collection="orderItemList" index="index" item="item" separator=",">
+            (
+            #{item.id,jdbcType=INTEGER},#{item.orderNo,jdbcType=BIGINT},#{item.userId,jdbcType=INTEGER},
+            #{item.productId,jdbcType=INTEGER},#{item.productName,jdbcType=VARCHAR},
+            #{item.productImage,jdbcType=VARCHAR},#{item.currentUnitPrice,jdbcType=BIGINT},
+            #{item.totalPrice,jdbcType=BIGINT},#{item.quantity,jdbcType=INTEGER},
+            now(),now()
+            )
+
+        </foreach>
+        #{totalPrice,jdbcType=DECIMAL},
+        #{quantity,jdbcType=INTEGER},
+        #{paymentTime,jdbcType=TIMESTAMP},
+        #{sendTime,jdbcType=TIMESTAMP},
+        #{endTime,jdbcType=TIMESTAMP},
+        #{closeTime,jdbcType=TIMESTAMP},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP}
+
+    </insert>
 </mapper>

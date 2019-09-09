@@ -1,11 +1,9 @@
 package com.mmall.dao;
 
 import com.mmall.pojo.OrderItem;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.ResultMap;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 public interface OrderItemMapper {
     /**
@@ -104,4 +102,7 @@ public interface OrderItemMapper {
             "where id = #{id,jdbcType=INTEGER}"
     })
     int updateByPrimaryKey(OrderItem record);
+
+    //批量插入
+    void batchInsert(@Param("orderItemList") List<OrderItem> orderItemList);
 }

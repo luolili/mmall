@@ -21,6 +21,7 @@ import java.text.Bidi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
@@ -45,9 +46,22 @@ public class OrderServiceImpl implements IOrderService {
             return response;
         }
         List<OrderItem> orderItemList = response.getData();
+        if (CollectionUtils.isEmpty(orderItemList)) {
+            return ServerResponse.createByErrorMessage("cart is empty");
+        }
         BigDecimal payment = getOrderTotalPrice(orderItemList);
+        // 生成订单
+        Order order = assembleOrder(userId, shippingId, payment);
 
+        if (order == null) {
+            return ServerResponse.createByErrorMessage("生成订单错误");
+        }
 
+        for (OrderItem orderItem : orderItemList) {
+            orderItem.setOrderNo(order.getOrderNo());
+        }
+
+        //mybatis 批量插入
         return null;
     }
 
@@ -61,18 +75,24 @@ public class OrderServiceImpl implements IOrderService {
         order.setPayment(payment);
         order.setUserId(userId);
         order.setShippingId(shippingId);
-        return order;
+        int count = orderMapper.insert(order);
+        if (count > 0) {
+            return order;
+        }
+        return null;
     }
 
+    //并发的时候有问题
     private long generateOrderNo() {
         long currentTimeMillis = System.currentTimeMillis();
-        return currentTimeMillis + currentTimeMillis % 9;
+        return currentTimeMillis + new Random().nextInt(100);
+        //return currentTimeMillis + currentTimeMillis % 9;
     }
 
     private BigDecimal getOrderTotalPrice(List<OrderItem> orderItemList) {
         BigDecimal result = new BigDecimal("0");
         for (OrderItem orderItem : orderItemList) {
-            BigDecimalUtil.add(result.doubleValue(), orderItem.getTotalPrice().doubleValue())
+            result = BigDecimalUtil.add(result.doubleValue(), orderItem.getTotalPrice().doubleValue())
         }
         return result;
     }
