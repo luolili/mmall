@@ -64,6 +64,15 @@ public class Const {
         public String getValue() {
             return value;
         }
+
+        public static OrderStatusEnum codeOf(int code) {
+            for (OrderStatusEnum e : values()) {
+                if (e.getCode() == code) {
+                    return e;
+                }
+            }
+            throw new RuntimeException("没有对应的支付类型");
+        }
     }
 
     public enum PayPlatformEnum {
@@ -103,6 +112,15 @@ public class Const {
 
         public String getValue() {
             return value;
+        }
+
+        public static PaymentTypeEnum codeOf(int code) {
+            for (PaymentTypeEnum e : values()) {
+                if (e.getCode() == code) {
+                    return e;
+                }
+            }
+            throw new RuntimeException("没有对应的支付类型");
         }
     }
 }

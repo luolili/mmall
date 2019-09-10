@@ -4,13 +4,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
-import com.mmall.dao.CartMapper;
-import com.mmall.dao.OrderItemMapper;
-import com.mmall.dao.OrderMapper;
-import com.mmall.dao.ProductMapper;
+import com.mmall.dao.*;
 import com.mmall.pojo.*;
 import com.mmall.service.IOrderService;
 import com.mmall.util.BigDecimalUtil;
+import com.mmall.vo.OrderVO;
+import com.mmall.vo.ShippingVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +36,8 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private OrderItemMapper orderItemMapper;
 
+    @Autowired
+    private ShippingMapper shippingMapper;
 
     public ServerResponse createOrder(Integer userId, Integer shippingId) {
         //从购物车里面获取信息
@@ -68,9 +69,45 @@ public class OrderServiceImpl implements IOrderService {
         return null;
     }
 
+    private OrderVO assembleOrderVO(Order order, List<OrderItem> orderItemList) {
+        OrderVO orderVO = new OrderVO();
+        orderVO.setOrderNo(order.getOrderNo());
+        orderVO.setPayment(order.getPayment());
+        orderVO.setPaymentType(order.getPaymentType());
+        orderVO.setPaymentTypeDesc(
+                Const.PaymentTypeEnum.codeOf(order.getPaymentType()).getValue());
+        orderVO.setPostage(order.getPostage());
+        orderVO.setStatus(order.getStatus());
+        orderVO.setStatusDesc(
+                Const.OrderStatusEnum.codeOf(order.getStatus()).getValue());
+        orderVO.setPaymentTime(order.getPaymentTime().toString());
+
+        orderVO.setShippingId(order.getShippingId());
+        Shipping shipping = shippingMapper.selectByPrimaryKey(order.getShippingId());
+
+        if (shipping != null) {
+            orderVO.setReceiverName(shipping.getReceiverName());
+            ShippingVO shippingVO = assambleShippingVO(shipping);
+            orderVO.setShippingVO(shippingVO);
+        }
+
+        return null;
+    }
+
+    private ShippingVO assambleShippingVO(Shipping shipping) {
+        ShippingVO vo = new ShippingVO();
+        vo.setReceiverName(shipping.getReceiverName());
+        vo.setReceiverAddress(shipping.getReceiverAddress());
+        vo.setReceiverCity(shipping.getReceiverCity());
+        vo.setReceiverProvince(shipping.getReceiverProvince());
+        vo.setReceiverZip(shipping.getReceiverZip());
+        vo.setReceiverDistrict(shipping.getReceiverDistrict());
+        vo.setReceiverPhone(shipping.getReceiverPhone());
+        vo.setReceiverMobile(shipping.getReceiverMobile());
+        return vo;
+    }
     private void clearCart(List<Cart> cartList) {
         for (Cart cart : cartList) {
-
             cartMapper.deleteByPrimaryKey(cart.getId());
         }
     }
