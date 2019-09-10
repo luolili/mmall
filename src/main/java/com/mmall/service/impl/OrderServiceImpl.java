@@ -253,4 +253,28 @@ public class OrderServiceImpl implements IOrderService {
 
         return null;
     }
+
+
+    @Override
+    public ServerResponse<String> cancel(Integer userId, Long orderNo) {
+        Order order = orderMapper.selectByUserIdOrderNo(userId, orderNo);
+
+        if (order == null) {
+            return ServerResponse.createByErrorMessage("订单不存在");
+        }
+
+        if (order.getStatus() != Const.OrderStatusEnum.NO_PAY.getCode()) {
+            return ServerResponse.createByErrorMessage("订单已经付款，不能取消");
+        }
+        Order updatOrder = new Order();
+        updatOrder.setId(order.getId());
+        updatOrder.setStatus(Const.OrderStatusEnum.CANCELED.getCode());
+        int count = orderMapper.updateByPrimaryKeySelective(updatOrder);
+        if (count > 0) {
+            return ServerResponse.createBySuccess("取消成功");
+        }
+        return ServerResponse.createByErrorMessage("取消失败");
+
+
+    }
 }

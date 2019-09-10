@@ -27,6 +27,8 @@ public class OrderController {
     @Autowired
     private IOrderService orderService;
 
+    @RequestMapping(value = "create.do", method = RequestMethod.POST)
+    @ResponseBody
     public ServerResponse create(HttpSession session, Integer shippingId) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
@@ -34,6 +36,18 @@ public class OrderController {
                     ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
         }
         return ServerResponse.createBySuccess(orderService.createOrder(user.getId(), shippingId));
+
+    }
+
+    @RequestMapping(value = "cancel.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse cancel(HttpSession session, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return ServerResponse.createBySuccess(orderService.cancel(user.getId(), orderNo));
 
     }
     @RequestMapping(value = "pay.do", method = RequestMethod.PUT)
