@@ -33,7 +33,7 @@ public class OrderController {
             return ServerResponse.createByErrorCodeMessage(
                     ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
         }
-
+        return ServerResponse.createBySuccess(orderService.createOrder(user.getId(), shippingId));
 
     }
     @RequestMapping(value = "pay.do", method = RequestMethod.PUT)

@@ -8,6 +8,8 @@ import com.mmall.dao.*;
 import com.mmall.pojo.*;
 import com.mmall.service.IOrderService;
 import com.mmall.util.BigDecimalUtil;
+import com.mmall.util.DateTimeUtil;
+import com.mmall.vo.OrderItemVO;
 import com.mmall.vo.OrderVO;
 import com.mmall.vo.ShippingVO;
 import org.apache.commons.collections.CollectionUtils;
@@ -39,6 +41,7 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private ShippingMapper shippingMapper;
 
+    @Override
     public ServerResponse createOrder(Integer userId, Integer shippingId) {
         //从购物车里面获取信息
         List<Cart> cartList = cartMapper.selectCheckedCartByUserId(userId);
@@ -64,9 +67,9 @@ public class OrderServiceImpl implements IOrderService {
         //减少商品库存
         reduceProductStock(orderItemList);
         clearCart(cartList);
-//返回给前台数据
+        //返回给前台数据
 
-        return null;
+        return ServerResponse.createBySuccess(assembleOrderVO(order, orderItemList));
     }
 
     private OrderVO assembleOrderVO(Order order, List<OrderItem> orderItemList) {
@@ -80,20 +83,40 @@ public class OrderServiceImpl implements IOrderService {
         orderVO.setStatus(order.getStatus());
         orderVO.setStatusDesc(
                 Const.OrderStatusEnum.codeOf(order.getStatus()).getValue());
-        orderVO.setPaymentTime(order.getPaymentTime().toString());
-
         orderVO.setShippingId(order.getShippingId());
         Shipping shipping = shippingMapper.selectByPrimaryKey(order.getShippingId());
-
         if (shipping != null) {
             orderVO.setReceiverName(shipping.getReceiverName());
             ShippingVO shippingVO = assambleShippingVO(shipping);
             orderVO.setShippingVO(shippingVO);
         }
 
-        return null;
+        orderVO.setPaymentTime(DateTimeUtil.dateToStr(order.getPaymentTime()));
+        orderVO.setCloseTime(DateTimeUtil.dateToStr(order.getCloseTime()));
+        orderVO.setCreateTime(DateTimeUtil.dateToStr(order.getCreateTime()));
+        orderVO.setSendTime(DateTimeUtil.dateToStr(order.getSendTime()));
+        orderVO.setEndTime(DateTimeUtil.dateToStr(order.getEndTime()));
+        orderVO.setOrderItemVOList(assembleOrderItemVO(orderItemList));
+        return orderVO;
     }
 
+    private List<OrderItemVO> assembleOrderItemVO(List<OrderItem> orderItemList) {
+        List<OrderItemVO> orderItemVOList = Lists.newArrayList();
+        for (OrderItem orderItem : orderItemList) {
+            OrderItemVO orderItemVO = new OrderItemVO();
+            orderItemVO.setOrderNo(orderItem.getOrderNo());
+            orderItemVO.setProductId(orderItem.getProductId());
+            orderItemVO.setProductImage(orderItem.getProductImage());
+            orderItemVO.setCurrentUnitPrice(orderItem.getCurrentUnitPrice());
+            orderItemVO.setQuantity(orderItem.getQuantity());
+            orderItemVO.setTotalPrice(orderItem.getTotalPrice());
+            orderItemVO.setCreateTime(DateTimeUtil.dateToStr(orderItem.getCreateTime()));
+
+            orderItemVOList.add(orderItemVO);
+
+        }
+        return orderItemVOList;
+    }
     private ShippingVO assambleShippingVO(Shipping shipping) {
         ShippingVO vo = new ShippingVO();
         vo.setReceiverName(shipping.getReceiverName());
