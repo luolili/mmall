@@ -197,6 +197,13 @@
         where user_id = #{userId}
         order by create_time desc
     </select>
+    <select id="selectByOrderNo" resultMap="BaseResultMap" parameterType="long">
+        select
+        <include refid="Base_Column_List"/>
+        from mmall_order
+        where order_no = #{orderNo}
+        order by create_time desc
+    </select>
     <select id="selectAll" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

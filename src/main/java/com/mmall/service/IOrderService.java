@@ -1,6 +1,7 @@
 package com.mmall.service;
 
 import com.mmall.common.ServerResponse;
+import com.mmall.vo.OrderVO;
 
 public interface IOrderService {
     ServerResponse createOrder(Integer userId, Integer shippingId);
@@ -19,4 +20,8 @@ public interface IOrderService {
 
     //backend
     ServerResponse getOrderList(Integer pageNum, Integer pageSize);
+
+    ServerResponse<OrderVO> manageDetail(Long orderNo);
+
+    ServerResponse manageSearch(Long orderNo, int pageNum, int pageSize);
 }

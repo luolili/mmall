@@ -32,4 +32,28 @@ public class OrderManageController {
         }
         return ServerResponse.createBySuccess(orderService.getOrderList(pageNum, pageSize));
     }
+
+    @RequestMapping(value = "detail.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse getOrderDetail(HttpSession session, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return ServerResponse.createBySuccess(orderService.manageDetail(orderNo));
+    }
+
+    @RequestMapping(value = "search.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse search(HttpSession session, Long orderNo,
+                                 @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                                 @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return ServerResponse.createBySuccess(orderService.manageSearch(orderNo, pageNum, pageSize));
+    }
 }
