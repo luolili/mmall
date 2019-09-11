@@ -8,4 +8,7 @@ public interface IOrderService {
     ServerResponse pay(Long orderNo, Integer userId, String path);
 
     ServerResponse<String> cancel(Integer userId, Long orderNo);
+
+    //
+    ServerResponse getCartProduct(Integer userId);
 }

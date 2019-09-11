@@ -48,7 +48,17 @@ public class OrderController {
                     ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
         }
         return ServerResponse.createBySuccess(orderService.cancel(user.getId(), orderNo));
+    }
 
+    @RequestMapping(value = "get_cart_product.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse getCartProduct(HttpSession session) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return ServerResponse.createBySuccess(orderService.getCartProduct(user.getId()));
     }
     @RequestMapping(value = "pay.do", method = RequestMethod.PUT)
     @ResponseBody

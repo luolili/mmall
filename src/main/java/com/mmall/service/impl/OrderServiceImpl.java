@@ -10,6 +10,7 @@ import com.mmall.service.IOrderService;
 import com.mmall.util.BigDecimalUtil;
 import com.mmall.util.DateTimeUtil;
 import com.mmall.vo.OrderItemVO;
+import com.mmall.vo.OrderProductVO;
 import com.mmall.vo.OrderVO;
 import com.mmall.vo.ShippingVO;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.text.Bidi;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
@@ -262,7 +260,6 @@ public class OrderServiceImpl implements IOrderService {
         if (order == null) {
             return ServerResponse.createByErrorMessage("订单不存在");
         }
-
         if (order.getStatus() != Const.OrderStatusEnum.NO_PAY.getCode()) {
             return ServerResponse.createByErrorMessage("订单已经付款，不能取消");
         }
@@ -274,7 +271,27 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.createBySuccess("取消成功");
         }
         return ServerResponse.createByErrorMessage("取消失败");
+    }
 
+    //
+    @Override
+    public ServerResponse getCartProduct(Integer userId) {
+        OrderProductVO orderProductVO = new OrderProductVO();
+        List<Cart> cartList = cartMapper.selectCheckedCartByUserId(userId);
+        ServerResponse<List<OrderItem>> serverResponse = getOrderItem(userId, cartList);
+        if (!serverResponse.isSuccess()) {
+            return serverResponse;
+        }
+        List<OrderItem> itemList = serverResponse.getData();
+        List<OrderItemVO> orderItemVOList = Lists.newArrayList();
+        BigDecimal payment = new BigDecimal("0");
 
+        for (OrderItem orderItem : itemList) {
+            payment = BigDecimalUtil.add(payment.doubleValue(), orderItem.getTotalPrice().doubleValue());
+        }
+        orderItemVOList = assembleOrderItemVO(itemList);
+        orderProductVO.setProductTotalPrice(payment);
+        orderProductVO.setOrderItemVOList(orderItemVOList);
+        return ServerResponse.createBySuccess(orderProductVO);
     }
 }

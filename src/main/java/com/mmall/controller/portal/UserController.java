@@ -71,6 +71,7 @@ public class UserController {
         return userService.selectQuestion(username);
     }
 
+    //token
     @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String username,
