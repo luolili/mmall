@@ -72,6 +72,16 @@ public class OrderController {
         return ServerResponse.createBySuccess(orderService.getOrderDetail(user.getId(), orderNo));
     }
 
+    @RequestMapping(value = "list.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse getOrders(HttpSession session, Long orderNo, Integer pageNum, Integer pageSize) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return ServerResponse.createBySuccess(orderService.getOrderList(user.getId(), pageNum, pageSize));
+    }
 
     @RequestMapping(value = "pay.do", method = RequestMethod.PUT)
     @ResponseBody

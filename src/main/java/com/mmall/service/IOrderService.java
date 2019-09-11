@@ -14,4 +14,6 @@ public interface IOrderService {
 
     //获取订单详情
     ServerResponse getOrderDetail(Integer userId, Long orderNo);
+
+    ServerResponse getOrderList(Integer userId, Integer pageNum, Integer pageSize);
 }

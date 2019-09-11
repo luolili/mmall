@@ -1,5 +1,7 @@
 package com.mmall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mmall.common.Const;
@@ -305,5 +307,32 @@ public class OrderServiceImpl implements IOrderService {
             return ServerResponse.createBySuccess(orderVO);
         }
         return ServerResponse.createByErrorMessage("没有该订单");
+    }
+
+    @Override
+    public ServerResponse getOrderList(Integer userId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectByUserId(userId);
+        List<OrderVO> orderVOList = assembleOrderVOList(userId, orderList);
+        PageInfo pageInfo = new PageInfo(orderList);
+        pageInfo.setList(orderVOList);
+        return ServerResponse.createBySuccess(pageInfo);
+    }
+
+    private List<OrderVO> assembleOrderVOList(Integer userId, List<Order> orderList) {
+        List<OrderVO> orderVOList = Lists.newArrayList();
+        for (Order order : orderList) {
+            List<OrderItem> orderItemList = Lists.newArrayList();
+            if (userId == null) {
+                //管理员不需要user id
+            } else {
+                orderItemList = orderItemMapper.selectByUserIdOrderNo(userId, order.getOrderNo());
+            }
+
+            OrderVO orderVO = assembleOrderVO(order, orderItemList);
+            orderVOList.add(orderVO);
+        }
+        return orderVOList;
+
     }
 }
