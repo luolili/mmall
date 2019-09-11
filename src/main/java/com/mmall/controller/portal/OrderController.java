@@ -60,6 +60,19 @@ public class OrderController {
         }
         return ServerResponse.createBySuccess(orderService.getCartProduct(user.getId()));
     }
+
+    @RequestMapping(value = "get_order_detail.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse getOrderDetail(HttpSession session, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return ServerResponse.createBySuccess(orderService.getOrderDetail(user.getId(), orderNo));
+    }
+
+
     @RequestMapping(value = "pay.do", method = RequestMethod.PUT)
     @ResponseBody
     public ServerResponse pay(HttpSession session, Long orderNo, HttpServletRequest request) {

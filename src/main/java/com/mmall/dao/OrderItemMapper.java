@@ -105,4 +105,6 @@ public interface OrderItemMapper {
 
     //批量插入
     void batchInsert(@Param("orderItemList") List<OrderItem> orderItemList);
+
+    List<OrderItem> selectByUserIdOrderNo(@Param("userId") Integer userId, @Param("orderNo") Long orderNo);
 }

@@ -294,4 +294,16 @@ public class OrderServiceImpl implements IOrderService {
         orderProductVO.setOrderItemVOList(orderItemVOList);
         return ServerResponse.createBySuccess(orderProductVO);
     }
+
+    //获取订单详情
+    @Override
+    public ServerResponse getOrderDetail(Integer userId, Long orderNo) {
+        Order order = orderMapper.selectByUserIdOrderNo(userId, orderNo);
+        if (order != null) {
+            List<OrderItem> orderItemList = orderItemMapper.selectByUserIdOrderNo(userId, orderNo);
+            OrderVO orderVO = assembleOrderVO(order, orderItemList);
+            return ServerResponse.createBySuccess(orderVO);
+        }
+        return ServerResponse.createByErrorMessage("没有该订单");
+    }
 }

@@ -11,4 +11,7 @@ public interface IOrderService {
 
     //
     ServerResponse getCartProduct(Integer userId);
+
+    //获取订单详情
+    ServerResponse getOrderDetail(Integer userId, Long orderNo);
 }
