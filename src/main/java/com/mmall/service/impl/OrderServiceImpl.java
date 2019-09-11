@@ -325,6 +325,7 @@ public class OrderServiceImpl implements IOrderService {
             List<OrderItem> orderItemList = Lists.newArrayList();
             if (userId == null) {
                 //管理员不需要user id
+                orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
             } else {
                 orderItemList = orderItemMapper.selectByUserIdOrderNo(userId, order.getOrderNo());
             }
@@ -333,6 +334,18 @@ public class OrderServiceImpl implements IOrderService {
             orderVOList.add(orderVO);
         }
         return orderVOList;
+    }
+
+    //backend
+    @Override
+    public ServerResponse getOrderList(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectAll();
+        List<OrderVO> orderVOList = assembleOrderVOList(null, orderList);
+
+        PageInfo pageInfo = new PageInfo(orderList);
+        pageInfo.setList(orderVOList);
+        return ServerResponse.createBySuccess(pageInfo);
 
     }
 }

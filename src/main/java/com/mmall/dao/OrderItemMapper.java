@@ -107,4 +107,6 @@ public interface OrderItemMapper {
     void batchInsert(@Param("orderItemList") List<OrderItem> orderItemList);
 
     List<OrderItem> selectByUserIdOrderNo(@Param("userId") Integer userId, @Param("orderNo") Long orderNo);
+
+    List<OrderItem> selectByOrderNo(@Param("orderNo") Long orderNo);
 }
