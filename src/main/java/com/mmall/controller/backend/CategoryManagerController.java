@@ -3,7 +3,6 @@ package com.mmall.controller.backend;
 import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
-import com.mmall.pojo.Category;
 import com.mmall.pojo.User;
 import com.mmall.service.ICategoryService;
 import com.mmall.service.IUserService;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @RequestMapping("manage/category/")
@@ -46,7 +44,7 @@ public class CategoryManagerController {
     public ServerResponse setCategoryName(HttpSession session,
                                           String categoryName, Integer categoryId) {
         User user = getCurrentUser(session);
-        ServerResponse<User> response = userService.checkAdminRole(user);
+        ServerResponse response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
             //admin yes
             return categoryService.updateCategoryName(categoryId, categoryName);
@@ -60,7 +58,7 @@ public class CategoryManagerController {
     public ServerResponse getChildrenParallelCategory(HttpSession session,
                                                       @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         User user = getCurrentUser(session);
-        ServerResponse<User> response = userService.checkAdminRole(user);
+        ServerResponse response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
             return categoryService.getChildrenParallelCategory(categoryId);
         } else {
@@ -73,7 +71,7 @@ public class CategoryManagerController {
     public ServerResponse getCategoryAndDeepCategory(HttpSession session,
                                                      @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         User user = getCurrentUser(session);
-        ServerResponse<User> response = userService.checkAdminRole(user);
+        ServerResponse response = userService.checkAdminRole(user);
         if (response.isSuccess()) {
             return categoryService.selectCategoryAndChildrenById(categoryId);
         } else {

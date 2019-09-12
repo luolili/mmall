@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -85,7 +84,7 @@ public class CartController {
     //全不选
     @RequestMapping(value = "unselect_all.do", method = RequestMethod.PUT)
     @ResponseBody
-    public ServerResponse unselectAll(HttpSession session, Integer productId) {
+    public ServerResponse unselectAll(HttpSession session) {
         User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
         if (currentUser == null) {
             return ServerResponse.createByErrorCodeMessage(

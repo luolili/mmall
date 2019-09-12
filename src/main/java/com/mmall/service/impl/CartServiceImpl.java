@@ -123,7 +123,7 @@ public class CartServiceImpl implements ICartService {
                     cartProductVO.setProductStatus(product.getStatus());
                     cartProductVO.setProductPrice(product.getPrice());
                     cartProductVO.setProductStock(product.getStock());
-                    int buyLimitCount = 0;
+                    int buyLimitCount;
 
                     if (product.getStock() >= cart.getQuantity()) {
                         buyLimitCount = cart.getQuantity();

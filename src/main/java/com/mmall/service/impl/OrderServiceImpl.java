@@ -19,9 +19,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
-import java.text.Bidi;
 import java.util.*;
 
 @Service

@@ -37,7 +37,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ServerResponse saveOrUpdate(Product product) {
-        int count = 0;
+        int count;
         if (product != null) {
             if (StringUtils.isNotBlank(product.getSubImages())) {
                 String[] subImageArray = product.getSubImages().split(",");
