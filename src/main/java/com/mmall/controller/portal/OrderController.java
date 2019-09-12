@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,7 +75,9 @@ public class OrderController {
 
     @RequestMapping(value = "list.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse getOrders(HttpSession session, Long orderNo, Integer pageNum, Integer pageSize) {
+    public ServerResponse getOrders(HttpSession session, Long orderNo,
+                                    @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                                    @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
             return ServerResponse.createByErrorCodeMessage(

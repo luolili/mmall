@@ -44,6 +44,16 @@ public class OrderManageController {
         return ServerResponse.createBySuccess(orderService.manageDetail(orderNo));
     }
 
+    @RequestMapping(value = "send_goods.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse sendGoods(HttpSession session, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMessage(
+                    ResponseCode.NEED_LOGIN.getCode(), "需要登陆");
+        }
+        return ServerResponse.createBySuccess(orderService.manageSendGoods(orderNo));
+    }
     @RequestMapping(value = "search.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse search(HttpSession session, Long orderNo,
