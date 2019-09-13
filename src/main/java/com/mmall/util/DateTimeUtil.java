@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class DateTimeUtil {
     private static Logger logger = LoggerFactory.getLogger(DateTimeUtil.class);
-    private static final String STANDARD_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    public static final String STANDARD_FORMAT = "yyyy-MM-dd hh:mm:ss";
     //joda-time
     public static Date strToDate(String dateTimeStr, String formatStr) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern(formatStr);
