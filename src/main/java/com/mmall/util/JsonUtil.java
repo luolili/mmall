@@ -1,5 +1,7 @@
 package com.mmall.util;
 
+import com.mmall.pojo.User;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import lombok.extern.slf4j.Slf4j;
@@ -23,18 +25,58 @@ public class JsonUtil {
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public <T> String obj2String(T obj) {
+    public static <T> String obj2String(T obj) {
         if (obj == null) {
             return null;
         }
-
         try {
             return (obj instanceof String ? (String) obj : mapper.writeValueAsString(obj));
         } catch (IOException e) {
             e.printStackTrace();
-            log.error("parse obj to string error", e);
+            log.warn("parse obj to string error", e);
             return null;
 
         }
+    }
+
+    public static <T> String obj2StringPretty(T obj) {
+        if (obj == null) {
+            return null;
+        }
+        try {
+            return (obj instanceof String ? (String) obj : mapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(obj));
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.warn("parse obj to string error", e);
+            return null;
+        }
+    }
+
+    public static <T> T string2Obj(String str, Class<T> clazz) {
+
+        if (StringUtils.isEmpty(str) || clazz == null) {
+            return null;
+        }
+        try {
+            return ((clazz.equals(String.class) ? (T) str : mapper.readValue(str, clazz)));
+        } catch (Exception e) {
+            log.warn("parse string to obj error", e);
+            return null;
+        }
+    }
+
+    public static void main(String[] args) {
+        User u1 = new User();
+        u1.setId(1);
+        u1.setEmail("jihu");
+        String s1 = JsonUtil.obj2String(u1);
+
+        String s2 = JsonUtil.obj2StringPretty(u1);
+
+        System.out.println(s1);
+        System.out.println(s2);
+        //user和u1的内存地址不一样
+        User user = JsonUtil.string2Obj(s1, User.class);
     }
 }
