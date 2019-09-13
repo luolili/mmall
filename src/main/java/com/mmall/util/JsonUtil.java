@@ -7,6 +7,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.type.JavaType;
+import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -54,12 +56,35 @@ public class JsonUtil {
     }
 
     public static <T> T string2Obj(String str, Class<T> clazz) {
-
         if (StringUtils.isEmpty(str) || clazz == null) {
             return null;
         }
         try {
             return ((clazz.equals(String.class) ? (T) str : mapper.readValue(str, clazz)));
+        } catch (Exception e) {
+            log.warn("parse string to obj error", e);
+            return null;
+        }
+    }
+
+    public static <T> T string2Obj(String str, Class<?> collectioClass, Class<?>... elementClasses) {
+        JavaType javaType = mapper.getTypeFactory().constructParametricType(collectioClass, elementClasses);
+
+        try {
+            return mapper.readValue(str, javaType);
+        } catch (Exception e) {
+            log.warn("parse string to obj error", e);
+            return null;
+        }
+    }
+
+    //序列化集合
+    public static <T> T string2Obj(String str, TypeReference<T> typeReference) {
+        if (StringUtils.isEmpty(str) || typeReference == null) {
+            return null;
+        }
+        try {
+            return (T) (typeReference.getType().equals(String.class) ? str : mapper.readValue(str, typeReference));
         } catch (Exception e) {
             log.warn("parse string to obj error", e);
             return null;
