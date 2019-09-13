@@ -44,3 +44,30 @@ fe：chrome插件； restlet client/postman
  - idea 右侧所选的是发布到tomcat里面的环境
  
  7. tomcat 集群/单机部署多应用/多机部署多应用
+ 
+ 8.在github 上下载win redis 解压运行：redis-server.exe;
+ 运行命令行：redis_cli.exe,以admin身份运行
+ 
+ redis.config:
+ 
+ -  port : 端口
+ - requirepass : 密码
+ - masterauth: 主从之间的密码
+ 
+ 命令：
+ - info : 如keyspace:db0
+ - dbsize
+ - flushdb/flushall
+ - save : 手动的保存
+ - quit ： 退出cli
+ 
+ - set a b: put
+ - get a : get
+ - del a : delete
+ - exists a
+ - expire a 20 : 设置a的过期时间为20s
+ - ttl :剩余时间
+ - type a : a的类型：hset city 2 cd
+ - randomkey
+ - rename oldKeyName newKeyName
+ 
