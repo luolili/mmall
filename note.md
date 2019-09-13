@@ -26,3 +26,17 @@ fe：chrome插件； restlet client/postman
  解决方法：最好不要在xml里面进行if判断。
  
  5. column id cannot be null:数据库设置主键自增。
+ 
+ 6.maven 环境隔离：
+ 多个开发环境的分离：dev, beta,test,product:线上；
+ 
+ 差异：数据库配置；服务器.
+ 
+ 配置step:
+ 
+ - 在build节点里面，新建resources节点
+ - 在build 同级，新建profiles节点
+ - 为不同的化境，新建不同的配置文件目录。
+ - 先取消灰色选中的dev,development,然后点击dev.
+ - 环境隔离的编译打包：
+ mvn clean package -Dmaven.test.skip=true -Pdev

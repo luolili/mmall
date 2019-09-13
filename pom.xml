@@ -307,5 +307,48 @@
         <version>2.8.2</version>
       </plugin>
     </plugins>
+
+      <!-- maven 环境隔离 config-->
+      <resources>
+          <resource>
+              <directory>src/main/resources.{deploy.type}</directory>
+              <excludes>
+                  <exclude>*.jsp</exclude><!-- jsp 不需要环境隔离； 前后端分离-->
+              </excludes>
+          </resource>
+
+          <resource>
+              <directory>src/main/resources</directory>
+          </resource>
+      </resources>
   </build>
+    <!-- profiles 和build 同级-->
+    <profiles>
+
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault><!-- 默认的环境-->
+            </activation>
+            <properties>
+                <deploy.type>dev</deploy.type>
+            </properties>
+        </profile>
+        <profile>
+            <id>beta</id>
+
+            <properties>
+                <deploy.type>beta</deploy.type>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <deploy.type>prod</deploy.type>
+            </properties>
+        </profile>
+
+
+    </profiles>
+
 </project>
