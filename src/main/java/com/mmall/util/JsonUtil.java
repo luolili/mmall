@@ -12,6 +12,7 @@ import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Slf4j
 public class JsonUtil {
@@ -20,6 +21,7 @@ public class JsonUtil {
 
     static {
         mapper.setSerializationInclusion(Inclusion.ALWAYS);
+        //mapper.setSerializationInclusion(Inclusion.NON_NULL);//序列化不是null的字段
         mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
         mapper.setDateFormat(new SimpleDateFormat(DateTimeUtil.STANDARD_FORMAT));//统一日期格式
@@ -95,6 +97,7 @@ public class JsonUtil {
         User u1 = new User();
         u1.setId(1);
         u1.setEmail("jihu");
+        u1.setCreateTime(new Date());
         String s1 = JsonUtil.obj2String(u1);
 
         String s2 = JsonUtil.obj2StringPretty(u1);
