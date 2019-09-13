@@ -70,4 +70,15 @@ fe：chrome插件； restlet client/postman
  - type a : a的类型：hset city 2 cd
  - randomkey
  - rename oldKeyName newKeyName
+ - setex a 100 value
+ - psetex a 10000 value :毫秒
+ - getrange a 2 4
+ - getset a aa:先get旧的值
+ - mset
+ - mget
+ - setnx: if not exist,success;msetnx
+ 
+ - lpush list 1 2 3
+ - llen list
+ - lrange list 1 2
  
