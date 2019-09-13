@@ -311,7 +311,7 @@
       <!-- maven 环境隔离 config-->
       <resources>
           <resource>
-              <directory>src/main/resources.{deploy.type}</directory>
+            <directory>src/main/resources.${deploy.type}</directory>
               <excludes>
                   <exclude>*.jsp</exclude><!-- jsp 不需要环境隔离； 前后端分离-->
               </excludes>

@@ -40,3 +40,7 @@ fe：chrome插件； restlet client/postman
  - 先取消灰色选中的dev,development,然后点击dev.
  - 环境隔离的编译打包：
  mvn clean package -Dmaven.test.skip=true -Pdev
+ 
+ - idea 右侧所选的是发布到tomcat里面的环境
+ 
+ 7. tomcat 集群/单机部署多应用/多机部署多应用
