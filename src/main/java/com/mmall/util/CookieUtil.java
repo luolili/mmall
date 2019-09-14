@@ -13,11 +13,11 @@ public class CookieUtil {
     private static final String COOKIE_DOMAIN = ".mmall.com";
     private static final String COOKIE_NAME = "mmal_login_token";
 
-    public static void wtiteLogiToken(HttpServletResponse response, String token) {
-
+    public static void writeLoginToken(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(COOKIE_NAME, token);
         cookie.setDomain(COOKIE_DOMAIN);
         cookie.setPath("/");
+        cookie.setHttpOnly(true);
         //不设置在的话，cookie写在内存，只在当前页面有效
         cookie.setMaxAge(60 * 60);//-1 是forever
         log.info("write cookie ,cookie name:{},value:{}", cookie.getName(), cookie.getValue());
@@ -35,7 +35,6 @@ public class CookieUtil {
 
             }
         }
-
         return null;
     }
 

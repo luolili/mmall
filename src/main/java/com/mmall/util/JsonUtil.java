@@ -71,7 +71,6 @@ public class JsonUtil {
 
     public static <T> T string2Obj(String str, Class<?> collectioClass, Class<?>... elementClasses) {
         JavaType javaType = mapper.getTypeFactory().constructParametricType(collectioClass, elementClasses);
-
         try {
             return mapper.readValue(str, javaType);
         } catch (Exception e) {
