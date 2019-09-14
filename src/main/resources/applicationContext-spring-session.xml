@@ -10,23 +10,22 @@
                 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
 
 
-
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations" value="classpath:mappers/*Mapper.xml"/>
         <!-- 分页-->
-     <!--   <property name="plugins">
-            <array>
-                <bean class="com.github.pagehelper.PageHelper">
-                    <property name="properties">
-                        <value>
-                            dialect=mysql
-                        </value>
-                    </property>
-                </bean>
-            </array>
-        </property>
--->
+        <!--   <property name="plugins">
+               <array>
+                   <bean class="com.github.pagehelper.PageHelper">
+                       <property name="properties">
+                           <value>
+                               dialect=mysql
+                           </value>
+                       </property>
+                   </bean>
+               </array>
+           </property>
+   -->
     </bean>
 
 
@@ -45,17 +44,23 @@
     </bean>
 
     <context:component-scan base-package="com.mmall" annotation-config="true"/>
-    <aop:aspectj-autoproxy />
+    <aop:aspectj-autoproxy/>
 
     <bean name="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.mmall.dao"/>
     </bean>
-     <!--<tx:annotation-driven  proxy-target-class="true"/>-->
+    <!--<tx:annotation-driven  proxy-target-class="true"/>-->
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
         <property name="rollbackOnCommitFailure" value="true"/>
     </bean>
 
-    <import resource="applicationContext-spring-session.xml"/>
+    <!-- spring session-->
+    <bean id="redisHttpSessionConfiguration"
+          class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
+        <property name="maxInactiveIntervalInSeconds" value="1800"/>
+        
+
+    </bean>
 </beans>
