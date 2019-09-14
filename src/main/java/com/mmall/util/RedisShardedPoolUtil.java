@@ -1,9 +1,6 @@
 package com.mmall.util;
-
-import com.mmall.common.RedisPool;
 import com.mmall.common.RedisShardedPool;
 import lombok.extern.slf4j.Slf4j;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ShardedJedis;
 
 @Slf4j
@@ -86,14 +83,4 @@ public class RedisShardedPoolUtil {
         return result;
     }
 
-    public static void main(String[] args) {
-        ShardedJedis jedis = RedisShardedPool.getJedis();
-        RedisShardedPoolUtil.set("keyTest", "valTest");
-        RedisShardedPoolUtil.setEx("keyEx", "valTestEx", 300);
-        String test = RedisShardedPoolUtil.get("keyTest");
-        System.out.println(test);
-
-        RedisShardedPoolUtil.del("keyTest");
-
-    }
 }

@@ -98,9 +98,7 @@ public class JsonUtil {
         u1.setEmail("jihu");
         u1.setCreateTime(new Date());
         String s1 = JsonUtil.obj2String(u1);
-
         String s2 = JsonUtil.obj2StringPretty(u1);
-
         System.out.println(s1);
         System.out.println(s2);
         //user和u1的内存地址不一样

@@ -64,7 +64,6 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;//不进入controller
         }
 
-
         return true;//true表示要经过controller
     }
 
