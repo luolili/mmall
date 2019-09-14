@@ -20,20 +20,21 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/user/springsession")
+@RequestMapping("/user/springsession/")
 public class UserSpringSessionController {
 
     @Autowired
     private IUserService userService;
 
-    @RequestMapping(value = "login.do", method = RequestMethod.POST)
+    @RequestMapping(value = "login.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse resp) {
         ServerResponse<User> response = userService.login(username, password);
         if (response.isSuccess()) {
-            RedisPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()),
-                    Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
-            CookieUtil.writeLoginToken(resp, session.getId());
+            session.setAttribute(Const.CURRENT_USER, response.getData());
+            //RedisPoolUtil.setEx(session.getId(), JsonUtil.obj2String(response.getData()),
+            //Const.RedisCacheExtime.REDIS_SESSION_EXTIME);
+            // CookieUtil.writeLoginToken(resp, session.getId());
         }
         return response;
     }
