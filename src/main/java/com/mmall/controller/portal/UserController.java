@@ -95,6 +95,7 @@ public class UserController {
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String username,
                                                     String question, String answer) {
+
         return userService.checkAnswer(username, question, answer);
     }
 
