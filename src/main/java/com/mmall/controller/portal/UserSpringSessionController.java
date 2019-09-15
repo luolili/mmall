@@ -19,6 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+/**
+ * 只需要增加applicatio-spring-session.xml配置即可
+ */
 @Controller
 @RequestMapping("/user/springsession/")
 public class UserSpringSessionController {
