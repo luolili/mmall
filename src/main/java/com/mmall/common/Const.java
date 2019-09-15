@@ -130,4 +130,8 @@ public class Const {
             throw new RuntimeException("没有对应的支付类型");
         }
     }
+
+    public interface RedisLock {
+        String CLOSE_ORDER_TASK_LOCK = "close_order_task_lock";
+    }
 }
