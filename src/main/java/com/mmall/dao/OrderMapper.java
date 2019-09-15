@@ -107,4 +107,8 @@ public interface OrderMapper {
 
     List<Order> selectAll();
 
+    //定时关单
+    List<Order> selectByStatusCreateTime(@Param("status") Integer status, @Param("date") String date);
+
+    int closeOrderById(Integer id);
 }

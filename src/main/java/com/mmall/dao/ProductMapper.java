@@ -104,4 +104,5 @@ public interface ProductMapper {
                                              @Param("categoryIdList") List<Integer> categoryIdList);
 
 
+    Integer selectStockByProductId(Integer id);
 }
