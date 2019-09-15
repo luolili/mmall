@@ -37,6 +37,10 @@ public class AuthInterceptor implements HandlerInterceptor {
             sb.append(key).append("=").append(Arrays.toString(value));
         }
 
+        //第一个方法：配置；二：代码
+        if (StringUtils.equals(className, "UserManageController") && StringUtils.equals(methodName, "login")) {
+            return true;
+        }
         User user = null;
         String loginToken = CookieUtil.readLoginToken(request);
         if (StringUtils.isNotEmpty(loginToken)) {
