@@ -1,13 +1,17 @@
 package com.mmall.task;
 
 import com.mmall.common.Const;
+import com.mmall.common.RedissonManager;
 import com.mmall.service.IOrderService;
 import com.mmall.util.PropertyUtil;
 import com.mmall.util.RedisShardedPoolUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 关单
@@ -80,5 +84,33 @@ public class CloseOrderTask {
         RedisShardedPoolUtil.del(Const.RedisLock.CLOSE_ORDER_TASK_LOCK);// 释放分布式锁
     }
 
+    @Autowired
+    private RedissonManager redissonManager;
 
+    //-- 分布式 任务调度
+    @Scheduled(cron = "0 */1 * * * ?")
+    public void closeOrderTaskV4() {
+        RLock lock = redissonManager.getRedisson().getLock(Const.RedisLock.CLOSE_ORDER_TASK_LOCK);
+
+        boolean getLock = false;
+        try {
+            if (getLock = lock.tryLock(2, 5, TimeUnit.MINUTES)) {
+                log.info("redisson get lock");
+                int hour = Integer.parseInt(PropertyUtil.getProperty("close.order.task.time.order", "2"));
+                orderService.closeOrder(hour);
+            } else {
+                log.info("not get lock");
+            }
+        } catch (InterruptedException e) {
+            log.info("redisson get lock err");
+        } finally {
+            if (!getLock) {
+                return;
+            }
+            lock.unlock();
+            log.info("redisson release lock");
+        }
+
+
+    }
 }
