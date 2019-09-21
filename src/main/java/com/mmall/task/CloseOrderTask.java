@@ -79,4 +79,6 @@ public class CloseOrderTask {
         log.info("关闭订单结束");
         RedisShardedPoolUtil.del(Const.RedisLock.CLOSE_ORDER_TASK_LOCK);// 释放分布式锁
     }
+
+
 }
